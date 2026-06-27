@@ -2,18 +2,19 @@
 
 [![npm version](https://img.shields.io/npm/v/@hituchhimpa/react-native-auth-vault.svg?style=flat-square&color=blue)](https://www.npmjs.com/package/@hituchhimpa/react-native-auth-vault)
 [![npm downloads](https://img.shields.io/npm/dm/@hituchhimpa/react-native-auth-vault.svg?style=flat-square&color=green)](https://www.npmjs.com/package/@hituchhimpa/react-native-auth-vault)
-[![Security Score](https://img.shields.io/badge/Security--Score-100%2F100-success?style=flat-square)](https://github.com/HituChhimpa7/react-native-auth-vault-community)
-[![Security Audit](https://img.shields.io/badge/Security--Audit-Passed-brightgreen?style=flat-square)](https://github.com/HituChhimpa7/react-native-auth-vault-community)
+[![Security Score](https://img.shields.io/badge/Security--Score-100%2F100-success?style=flat-square)](SECURITY.md)
+[![Malware Shield](https://img.shields.io/badge/Malware--Shield-Protected-brightgreen?style=flat-square)](SECURITY.md)
+[![Security Audit](https://img.shields.io/badge/Security--Audit-Passed-brightgreen?style=flat-square)](SECURITY.md)
 [![license](https://img.shields.io/github/license/HituChhimpa7/react-native-auth-vault?style=flat-square)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-iOS%20%7C%20Android-lightgrey?style=flat-square)](https://reactnative.dev)
 [![New Architecture](https://img.shields.io/badge/New%20Architecture-✅-brightgreen?style=flat-square)](https://reactnative.dev/docs/the-new-architecture/landing-page)
 [![Expo](https://img.shields.io/badge/Expo-✅-purple?style=flat-square)](https://expo.dev)
 
-> **The only React Native security toolkit that passes a bank's security audit out of the box.**
+> **The zero-trust React Native security & authentication toolkit built for enterprise mobile applications.**
 
 Replace 5+ separate security packages with a single, production-hardened SDK built on Apple Secure Enclave, Android StrongBox, and hardware security modules. 
 
-`react-native-auth-vault` provides bank-grade biometric encryption, secure in-memory storage (never exposed to the JavaScript heap), runtime threat detection (debugger, hooking, tamper, emulator, and jailbreak/root), device attestation, and hardware-backed request signing.
+`react-native-auth-vault` provides bank-grade biometric encryption, secure native in-memory storage (never exposed to the JavaScript heap), runtime threat and malware detection (debugger, Frida/Xposed hooking, app tampering, emulator, jailbreak/root), device attestation, and hardware-backed asymmetric ECDSA request signing.
 
 <p align="center">
   <img src="./assets/auth_vault_mockup.png" width="450" alt="react-native-auth-vault mockup" />
@@ -21,35 +22,52 @@ Replace 5+ separate security packages with a single, production-hardened SDK bui
 
 ---
 
-## 📊 Competitive Landscape
+## 🛡️ Anti-Malware & Supply Chain Security Shield
+
+> [!IMPORTANT]
+> **Zero-Trust Supply Chain Verification**: This package enforces strict anti-malware and supply chain security controls. For full architecture details, refer to [SECURITY.md](SECURITY.md).
+
+- **No Dangerous Lifecycle Scripts**: Clean package exports with zero `preinstall` or `postinstall` script execution vectors.
+- **Hardware Cryptographic Isolation**: Private keys and master secrets are bound to hardware chips (Secure Enclave / StrongBox) and never enter JavaScript heap memory.
+- **Dynamic Hooking Block**: Scans active process memory maps (`/proc/self/maps`, dyld framework images) to detect and neutralize Frida gadgets or malicious Xposed hooking engines.
+- **Tapjacking Defense**: Drops unauthorized touch events on Android whenever dynamic overlay malware attempts to hijack user authentication prompts.
+
+---
+
+## 📊 Feature Comparison
 
 | Feature | `react-native-keychain` | `react-native-biometrics` | `react-native-encrypted-storage` | **react-native-auth-vault** |
 |---|:---:|:---:|:---:|:---:|
-| **Biometric Encryption** | ✅ | ✅ | ❌ | **✅ Yes** |
+| **Biometric Hardware Encryption** | ✅ | ✅ | ❌ | **✅ Yes** |
 | **Hardware-Backed Keys** | Partial | ❌ | ❌ | **✅ Secure Enclave / StrongBox** |
-| **Root & Jailbreak Detection** | ❌ | ❌ | ❌ | **✅ Built-in (Multi-layered)** |
-| **Frida & Xposed Hooking Detection** | ❌ | ❌ | ❌ | **✅ Active Runtime Scan** |
-| **App Tampering Detection** | ❌ | ❌ | ❌ | **✅ Code Signature Integrity** |
-| **Device Attestation (Play Integrity / App Attest)** | ❌ | ❌ | ❌ | **✅ Nonce-based Cryptographic** |
-| **Session Expiry & Auto-Lock** | ❌ | ❌ | ❌ | **✅ Native Timers** |
+| **Root & Jailbreak Detection** | ❌ | ❌ | ❌ | **✅ Multi-layered System Audit** |
+| **Frida & Xposed Hooking Detection** | ❌ | ❌ | ❌ | **✅ Active Runtime RAM Scan** |
+| **App Tampering Verification** | ❌ | ❌ | ❌ | **✅ Binary Signature Integrity** |
+| **Device Attestation** | ❌ | ❌ | ❌ | **✅ Nonce-based Cryptographic** |
+| **Session Expiry & Auto-Lock** | ❌ | ❌ | ❌ | **✅ Native Hardware Timers** |
 | **Privacy Screen (App Switcher Masking)** | ❌ | ❌ | ❌ | **✅ Auto Blur / FLAG_SECURE** |
-| **Tapjacking / Overlay Protection** | ❌ | ❌ | ❌ | **✅ Yes (Android)** |
-| **Secure In-Memory Storage** | ❌ | ❌ | ❌ | **✅ zero-fill, `mlock` page** |
+| **Tapjacking / Overlay Protection** | ❌ | ❌ | ❌ | **✅ Obscured Touch Drop** |
+| **Secure Native In-Memory Storage** | ❌ | ❌ | ❌ | **✅ Zero-fill RAM / `mlock` page** |
 | **Asymmetric ECC Signing** | ❌ | ❌ | ❌ | **✅ P-256 ECC Signatures** |
-| **Real-time Security Events** | ❌ | ❌ | ❌ | **✅ Reactive Event Listener** |
-| **Security Scoring Engine** | ❌ | ❌ | ❌ | **✅ Unified Audit Score** |
+| **Real-time Security Events** | ❌ | ❌ | ❌ | **✅ Reactive Event Emitter** |
+| **Unified Security Audit Engine** | ❌ | ❌ | ❌ | **✅ Real-time Audit Score** |
 | **Expo Config Plugin** | ❌ | ❌ | ❌ | **✅ Plug-and-Play** |
 
 ---
 
-## ✨ v1.1.0 Feature Highlights & Native Architecture
+## ✨ Native Architecture & Defense Features
+
+### ⚡ Architecture Compatibility (TurboModules & JSI)
+`react-native-auth-vault` is built on React Native's official **TurboModule Architecture (New Architecture / Codegen)** with direct JSI and Swift / Kotlin bindings for 100% zero-bridge native performance across React Native CLI and Expo apps.
+- **TurboModules (Official New Architecture)**: ✅ **Supported natively out-of-the-box** with automatic C++/Swift/Kotlin dynamic bindings.
+- **Nitro Modules**: ℹ️ Currently, core security operations run on official JSI TurboModules for maximum cross-platform stability and zero extra dependency overhead. Full Nitro Modules bindings are planned for a future release (v1.3.0) for ultra-low latency synchronous C++ cross-thread calls.
 
 ### 🔐 Hardware-Protected Vault & Encryption
 AES-256 encryption backed by hardware-isolated cryptoprocessors.
 - **iOS:** Keychain Services integration utilizing Access Control flags to gate keys with Face ID / Touch ID or Device Passcode.
 - **Android:** AES-256 key generation inside `AndroidKeyStore` with dedicated **StrongBox** hardware support where available.
 
-### 🕵️ Dynamic Threat Detection
+### 🕵️ Dynamic Threat & Malware Detection
 Provides multi-layered system and runtime validation:
 - **Jailbreak / Root Detection:** Scans for forbidden directories, writable files, system bin files (`su`, `busybox`), and mock location providers.
 - **Frida / Xposed Injection:**
@@ -60,7 +78,7 @@ Provides multi-layered system and runtime validation:
   - **Android:** Extracts and compares the APK signing certificate hash against the expected original certificate.
 - **Debugger Detection:** Monitors `sysctl` `P_TRACED` flag on iOS and `Debug.isDebuggerConnected()` on Android.
 
-### 🧠 Secure In-Memory Storage
+### 🧠 Secure In-Memory Storage (Zero Heap Exposure)
 Variables stored in JavaScript heap can be easily dumped from memory or read by attackers. `auth-vault` provides native-level in-memory storage:
 - **iOS:** Key-value pairs stored in memory pages locked using `mlock` to prevent them from writing to swap space.
 - **Android:** Uses native `CharArray` buffers which can be manually zero-filled (`\u0000`) before garbage collection, rather than immutable Java strings.
@@ -70,9 +88,6 @@ Variables stored in JavaScript heap can be easily dumped from memory or read by 
   - **iOS:** Automatically overlays a system `UIVisualEffectView` blur on application resignation (`UIApplicationWillResignActiveNotification`).
   - **Android:** Sets `FLAG_SECURE` on the window to natively block screenshots, video recordings, and app-switcher snapshots.
 - **Tapjacking Protection:** Activates Android `filterTouchesWhenObscured` to drop touches whenever an overlay or overlay-based malware is running on top of your app.
-
-### 📡 Real-Time Security Events
-Emit instant react native events when threats or status changes occur (e.g. Session Expiration, Biometrics change, Frida hooking detection).
 
 ---
 
@@ -84,14 +99,14 @@ npm install @hituchhimpa/react-native-auth-vault
 yarn add @hituchhimpa/react-native-auth-vault
 ```
 
-**iOS — Link CocoaPods:**
+### iOS CocoaPods Linking
 ```sh
 cd ios && pod install
 ```
 
 ---
 
-## ⚙️ Expo Setup
+## ⚙️ Expo Configuration
 
 Add `@hituchhimpa/react-native-auth-vault` to your Expo config (`app.json` or `app.config.js`):
 
@@ -110,7 +125,7 @@ Add `@hituchhimpa/react-native-auth-vault` to your Expo config (`app.json` or `a
 }
 ```
 
-Then regenerate native folders:
+Then regenerate native build folders:
 ```sh
 npx expo prebuild
 ```
@@ -137,7 +152,7 @@ Retrieves and decrypts a key-value pair.
 Deletes a value and its encryption key from storage.
 
 #### `AuthVault.encrypt(plainText: string, prompt: string): Promise<string>`
-Encrypts arbitrary string data and returns a Base64-encoded encrypted string. Suitable for encrypting custom database entries.
+Encrypts arbitrary string data and returns a Base64-encoded encrypted string.
 
 #### `AuthVault.decrypt(encryptedBase64: string, prompt: string): Promise<string>`
 Decrypts a Base64-encoded ciphertext string back to raw text.
@@ -147,13 +162,13 @@ Decrypts a Base64-encoded ciphertext string back to raw text.
 ### Security Auditing
 
 #### `AuthVault.audit(): SecurityPosture`
-Synchronously scans the device and returns a diagnostic object of the system's security integrity.
+Synchronously scans the device and returns a diagnostic posture object of the system's security integrity.
 
 ```typescript
-const report = AuthVault.audit();
+const posture = AuthVault.audit();
 ```
 
-##### `SecurityPosture` properties:
+##### Diagnostic Posture Properties:
 - `securityScore`: `number` (0 to 100). Rating of device safety.
 - `jailbroken`: `boolean` (iOS jailbreak detected).
 - `rooted`: `boolean` (Android root detected).
@@ -177,7 +192,6 @@ Blocks screenshots/screen recordings on Android and applies a secure blur in the
 
 #### `AuthVault.generateAttestation(nonce: string): Promise<string>`
 Generates a platform integrity payload (App Attest on iOS / Play Integrity Token on Android) bound to the provided `nonce`.
-- *Note:* The token must be validated cryptographically on your server.
 
 ---
 
@@ -216,7 +230,7 @@ Zero-fills and clears all secure native-isolated memory storage.
 ### Key Rotation & Events
 
 #### `AuthVault.rotateEncryptionKey(): Promise<boolean>`
-Re-encrypts the master storage key with a newly generated hardware key. Use this periodically to implement security compliance policies.
+Re-encrypts the master storage key with a newly generated hardware key.
 
 #### `AuthVault.onSecurityEvent(callback: (event: SecurityEvent) => void): EmitterSubscription`
 Listens for real-time security events.
@@ -232,98 +246,39 @@ interface SecurityEvent {
 
 ---
 
-## 🚀 Quick Start & Integration Guides
-
-### 1. Unified Device Risk Check
-Implement this in your App entry point or prior to starting high-risk actions (e.g. transfers, password updates):
-
-```typescript
-import { Alert, BackHandler } from 'react-native';
-import { AuthVault } from '@hituchhimpa/react-native-auth-vault';
-
-function checkDeviceTrust() {
-  const security = AuthVault.audit();
-
-  if (security.jailbroken || security.rooted || security.hookingDetected) {
-    Alert.alert(
-      'Security Exception',
-      'This device has been compromised. The app will close.',
-      [{ text: 'OK', onPress: () => BackHandler.exitApp() }]
-    );
-    return false;
-  }
-
-  if (security.securityScore < 80) {
-    Alert.alert('Warning', 'Your device does not meet optimal security requirements.');
-  }
-  
-  return true;
-}
-```
-
-### 2. Biometric-Authenticated API Handshake
-Request cryptographic signing keys on enrollment and sign critical request payloads:
-
-```typescript
-import { AuthVault } from '@hituchhimpa/react-native-auth-vault';
-
-// 1. Setup Phase (Device Registration)
-async function registerDevice() {
-  const publicKey = await AuthVault.generateSigningKeyPair('app-signing-key');
-  await sendPublicKeyToBackend(publicKey);
-}
-
-// 2. Transaction Phase (Request Signing)
-async function makeSecureTransaction(amount: number, recipientId: string) {
-  const payload = JSON.stringify({ amount, recipientId, timestamp: Date.now() });
-  
-  // Prompt user for biometrics & sign payload inside hardware
-  const signature = await AuthVault.signData('app-signing-key', payload);
-  
-  const response = await fetch('https://api.yourbank.com/transfer', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Device-Signature': signature,
-    },
-    body: payload,
-  });
-  
-  return response.json();
-}
-```
-
-### 3. Session Expiration & Screen Masking
-Handle privacy overlays and session auto-lock reactively:
+## 🚀 Enterprise Integration Workflow
 
 ```typescript
 import React, { useEffect } from 'react';
+import { Alert, BackHandler } from 'react-native';
 import { AuthVault } from '@hituchhimpa/react-native-auth-vault';
 
 export function App() {
   useEffect(() => {
-    // Enable system switcher masking & screenshot protection
+    // 1. Run Device Risk Audit
+    const posture = AuthVault.audit();
+    if (posture.jailbroken || posture.rooted || posture.hookingDetected) {
+      Alert.alert('Security Violation', 'Compromised environment detected.', [
+        { text: 'OK', onPress: () => BackHandler.exitApp() }
+      ]);
+      return;
+    }
+
+    // 2. Enable UI & Screen Shields
     AuthVault.setPrivacyScreenEnabled(true);
     AuthVault.setOverlayProtectionEnabled(true);
 
-    // Set 3-minute inactivity session lock
-    AuthVault.setSessionTimeout(180);
+    // 3. Set Inactivity Auto-Lock (5 minutes)
+    AuthVault.setSessionTimeout(300);
 
-    // Register listener for real-time security events
-    const subscription = AuthVault.onSecurityEvent((event) => {
-      if (event.type === 'SESSION_EXPIRED') {
-        // Clear local credentials, wipe memory, and route to login
+    // 4. Register Real-Time Security Event Listener
+    const sub = AuthVault.onSecurityEvent((event) => {
+      if (event.type === 'SESSION_EXPIRED' || event.type === 'HOOKING_DETECTED') {
         AuthVault.wipeSession();
-        navigateToLogin();
-      }
-      if (event.type === 'BIOMETRIC_CHANGED') {
-        handleBiometricAlteration();
       }
     });
 
-    return () => {
-      subscription.remove();
-    };
+    return () => sub.remove();
   }, []);
 
   return <MainNavigator />;
@@ -332,32 +287,9 @@ export function App() {
 
 ---
 
-## 🔒 Security Advisories & Vulnerability Reporting
+## 🔒 Security Policy & Vulnerability Disclosure
 
-If you believe you have discovered a security vulnerability or bug in this library, you can:
-- 🐛 Open a public issue on our [GitHub Issues](https://github.com/HituChhimpa7/react-native-auth-vault-community/issues) page.
-- ✉️ Contact us privately via email: `hituchhimpa7@users.noreply.github.com`.
-
-Please include a detailed description of the vulnerability/bug, steps to reproduce it, and the potential impact. We will acknowledge and address verified reports as soon as possible.
-
----
-
-## 🗺️ Roadmap
-
-| Version | Target / Status | Features |
-|---|---|---|
-| **v1.1.0** | ✅ Released | Biometric enrollment change detection, Session expiry, ECC key pairs + signing, Secure memory, Tamper detection, Security events API, Key rotation, Device attestation, Privacy screen, Tapjacking protection, Expo plugin |
-| **v1.2.0** | 🗓️ Next Release | SSL/Certificate Pinning helper, Real-time screen recording detection, Clipboard auto-clear protection, Unified `getSecurityPosture()` API, Secure CSPRNG |
-| **v1.3.0** | 🗓️ Future Release | TOTP engine (RFC 6238), Network anomaly detection (VPN/Proxy/Tor), Anti-debugging active policy, Panic wipe API |
-| **v1.4.0** | 🗓️ Long-term | BIP-39 mnemonic generation (native), BIP-32 HD key derivation, Zero-knowledge proof module, Quantum-safe key exchange |
-
----
-
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/HituChhimpa7/react-native-auth-vault-community/issues).
-
-Before submitting code, please review the [Contributing Guide](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md).
+For vulnerability reports, security policies, and coordinated disclosure guidance, please consult [SECURITY.md](SECURITY.md).
 
 ---
 
