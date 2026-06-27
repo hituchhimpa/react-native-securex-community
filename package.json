@@ -66,14 +66,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/HituChhimpa7/react-native-auth-vault-community.git"
+    "url": "git+https://github.com/HituChhimpa7/react-native-auth-vault.git"
   },
   "author": "Hitesh Chhimpa <hituchhimpa7@users.noreply.github.com> (https://github.com/hituchhimpa7)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/HituChhimpa7/react-native-auth-vault-community/issues"
+    "url": "https://github.com/HituChhimpa7/react-native-auth-vault/issues"
   },
-  "homepage": "https://github.com/HituChhimpa7/react-native-auth-vault-community#readme",
+  "homepage": "https://github.com/HituChhimpa7/react-native-auth-vault#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
