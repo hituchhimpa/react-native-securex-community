@@ -34,27 +34,6 @@ Replace 5+ separate security packages with a single, production-hardened SDK bui
 
 ---
 
-## 📊 Feature Comparison
-
-| Feature | `react-native-keychain` | `react-native-biometrics` | `react-native-encrypted-storage` | **react-native-auth-vault** |
-|---|:---:|:---:|:---:|:---:|
-| **Biometric Hardware Encryption** | ✅ | ✅ | ❌ | **✅ Yes** |
-| **Hardware-Backed Keys** | Partial | ❌ | ❌ | **✅ Secure Enclave / StrongBox** |
-| **Root & Jailbreak Detection** | ❌ | ❌ | ❌ | **✅ Multi-layered System Audit** |
-| **Frida & Xposed Hooking Detection** | ❌ | ❌ | ❌ | **✅ Active Runtime RAM Scan** |
-| **App Tampering Verification** | ❌ | ❌ | ❌ | **✅ Binary Signature Integrity** |
-| **Device Attestation** | ❌ | ❌ | ❌ | **✅ Nonce-based Cryptographic** |
-| **Session Expiry & Auto-Lock** | ❌ | ❌ | ❌ | **✅ Native Hardware Timers** |
-| **Privacy Screen (App Switcher Masking)** | ❌ | ❌ | ❌ | **✅ Auto Blur / FLAG_SECURE** |
-| **Tapjacking / Overlay Protection** | ❌ | ❌ | ❌ | **✅ Obscured Touch Drop** |
-| **Secure Native In-Memory Storage** | ❌ | ❌ | ❌ | **✅ Zero-fill RAM / `mlock` page** |
-| **Asymmetric ECC Signing** | ❌ | ❌ | ❌ | **✅ P-256 ECC Signatures** |
-| **Real-time Security Events** | ❌ | ❌ | ❌ | **✅ Reactive Event Emitter** |
-| **Unified Security Audit Engine** | ❌ | ❌ | ❌ | **✅ Real-time Audit Score** |
-| **Expo Config Plugin** | ❌ | ❌ | ❌ | **✅ Plug-and-Play** |
-
----
-
 ## ✨ Native Architecture & Defense Features
 
 ### ⚡ Architecture Compatibility (TurboModules & JSI)
@@ -99,9 +78,19 @@ npm install @hituchhimpa/react-native-auth-vault
 yarn add @hituchhimpa/react-native-auth-vault
 ```
 
-### iOS CocoaPods Linking
+### iOS Installation & Permissions
+
+#### 1. CocoaPods Linking
 ```sh
 cd ios && pod install
+```
+
+#### 2. Info.plist Permissions
+For Face ID support, you **must** add the `NSFaceIDUsageDescription` key to your application's `ios/YourAppName/Info.plist`:
+
+```xml
+<key>NSFaceIDUsageDescription</key>
+<string>Allow $(PRODUCT_NAME) to use Face ID for secure authentication.</string>
 ```
 
 ---
