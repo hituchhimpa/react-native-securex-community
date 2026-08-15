@@ -2,10 +2,10 @@
 
 [![npm version](https://img.shields.io/npm/v/@hituchhimpa/react-native-auth-vault.svg?style=flat-square&color=blue)](https://www.npmjs.com/package/@hituchhimpa/react-native-auth-vault)
 [![npm downloads](https://img.shields.io/npm/dm/@hituchhimpa/react-native-auth-vault.svg?style=flat-square&color=green)](https://www.npmjs.com/package/@hituchhimpa/react-native-auth-vault)
-[![Security Score](https://img.shields.io/badge/Security--Score-100%2F100-success?style=flat-square)](https://github.com/HituChhimpa7/react-native-auth-vault/blob/main/SECURITY.md)
-[![Malware Shield](https://img.shields.io/badge/Malware--Shield-Protected-brightgreen?style=flat-square)](https://github.com/HituChhimpa7/react-native-auth-vault/blob/main/SECURITY.md)
-[![Security Audit](https://img.shields.io/badge/Security--Audit-Passed-brightgreen?style=flat-square)](https://github.com/HituChhimpa7/react-native-auth-vault/blob/main/SECURITY.md)
-[![license](https://img.shields.io/github/license/HituChhimpa7/react-native-auth-vault?style=flat-square)](LICENSE)
+[![Security Score](https://img.shields.io/badge/Security--Score-100%2F100-success?style=flat-square)](https://github.com/HituChhimpa7/react-native-auth-vault-community/blob/main/SECURITY.md)
+[![Malware Shield](https://img.shields.io/badge/Malware--Shield-Protected-brightgreen?style=flat-square)](https://github.com/HituChhimpa7/react-native-auth-vault-community/blob/main/SECURITY.md)
+[![Security Audit](https://img.shields.io/badge/Security--Audit-Passed-brightgreen?style=flat-square)](https://github.com/HituChhimpa7/react-native-auth-vault-community/blob/main/SECURITY.md)
+[![license](https://img.shields.io/github/license/HituChhimpa7/react-native-auth-vault-community?style=flat-square)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-iOS%20%7C%20Android-lightgrey?style=flat-square)](https://reactnative.dev)
 [![New Architecture](https://img.shields.io/badge/New%20Architecture-✅-brightgreen?style=flat-square)](https://reactnative.dev/docs/the-new-architecture/landing-page)
 [![Expo](https://img.shields.io/badge/Expo-✅-purple?style=flat-square)](https://expo.dev)
@@ -25,7 +25,7 @@ Replace 5+ separate security packages with a single, production-hardened SDK bui
 ## 🛡️ Anti-Malware & Supply Chain Security Shield
 
 > [!IMPORTANT]
-> **Zero-Trust Supply Chain Verification**: This package enforces strict anti-malware and supply chain security controls. For full architecture details, refer to [SECURITY.md](https://github.com/HituChhimpa7/react-native-auth-vault/blob/main/SECURITY.md).
+> **Zero-Trust Supply Chain Verification**: This package enforces strict anti-malware and supply chain security controls. For full architecture details, refer to [SECURITY.md](https://github.com/HituChhimpa7/react-native-auth-vault-community/blob/main/SECURITY.md).
 
 - **No Dangerous Lifecycle Scripts**: Clean package exports with zero `preinstall` or `postinstall` script execution vectors.
 - **Hardware Cryptographic Isolation**: Private keys and master secrets are bound to hardware chips (Secure Enclave / StrongBox) and never enter JavaScript heap memory.
@@ -278,7 +278,7 @@ export function App() {
 
 ## 🔒 Security Policy & Vulnerability Disclosure
 
-For vulnerability reports, security policies, and coordinated disclosure guidance, please consult [SECURITY.md](https://github.com/HituChhimpa7/react-native-auth-vault/blob/main/SECURITY.md).
+For vulnerability reports, security policies, and coordinated disclosure guidance, please consult [SECURITY.md](https://github.com/HituChhimpa7/react-native-auth-vault-community/blob/main/SECURITY.md).
 
 ---
 

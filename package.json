@@ -1,6 +1,6 @@
 {
   "name": "@hituchhimpa/react-native-auth-vault",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "Native-first React Native security and authentication library",
   "main": "./lib/module/index.js",
   "expo": "./app.plugin.js",
@@ -69,14 +69,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/HituChhimpa7/react-native-auth-vault.git"
+    "url": "git+https://github.com/HituChhimpa7/react-native-auth-vault-community.git"
   },
   "author": "Hitesh Chhimpa <hituchhimpa7@users.noreply.github.com> (https://github.com/hituchhimpa7)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/HituChhimpa7/react-native-auth-vault/issues"
+    "url": "https://github.com/HituChhimpa7/react-native-auth-vault-community/issues"
   },
-  "homepage": "https://github.com/HituChhimpa7/react-native-auth-vault#readme",
+  "homepage": "https://github.com/HituChhimpa7/react-native-auth-vault-community#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
