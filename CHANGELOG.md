@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.1.2] - 2026-06-29
+
+### Fixed
+- **iOS EventEmitter Subclassing:** `ReactNativeAuthVault` now correctly subclasses `RCTEventEmitter` to prevent runtime crashes when security events are emitted.
+- **iOS Header Import Guards:** Added `#if __has_include` guards for `RCTEventEmitter.h`, `RCTBridgeModule.h`, and `ReactNativeAuthVaultSpec.h` across CocoaPods header configurations.
+- **iOS App Tamper Detection:** Wrapped macOS static code verification APIs in `#if os(macOS)` to prevent link errors and runtime crashes on iOS hardware.
+- **TurboModule Codegen Spec Types:** Added `Double` and `UnsafeObject` type aliases in `NativeReactNativeAuthVault.ts` for full React Native Codegen & TypeScript compatibility.
+
+---
+
 ## [1.1.0] - 2024-06-24
 
 ### Added — Security Fortress

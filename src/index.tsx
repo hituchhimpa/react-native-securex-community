@@ -44,10 +44,8 @@ export const AuthVault = {
   // --- Session Key Expiry ---
   setSessionTimeout: (seconds: number): void =>
     ReactNativeAuthVault.setSessionTimeout(seconds),
-  isSessionExpired: (): boolean =>
-    ReactNativeAuthVault.isSessionExpired(),
-  wipeSession: (): void =>
-    ReactNativeAuthVault.wipeSession(),
+  isSessionExpired: (): boolean => ReactNativeAuthVault.isSessionExpired(),
+  wipeSession: (): void => ReactNativeAuthVault.wipeSession(),
 
   // --- ECC Hardware Key Pairs + Signing ---
   generateSigningKeyPair: (tag: string): Promise<string> =>
@@ -60,12 +58,10 @@ export const AuthVault = {
     ReactNativeAuthVault.secureStore(key, value),
   secureRead: (key: string): string | null =>
     ReactNativeAuthVault.secureRead(key),
-  secureWipe: (): void =>
-    ReactNativeAuthVault.secureWipe(),
+  secureWipe: (): void => ReactNativeAuthVault.secureWipe(),
 
   // --- Runtime App Tamper Detection ---
-  isAppTampered: (): boolean =>
-    ReactNativeAuthVault.isAppTampered(),
+  isAppTampered: (): boolean => ReactNativeAuthVault.isAppTampered(),
 
   // --- Key Rotation ---
   rotateEncryptionKey: (): Promise<boolean> =>
@@ -73,6 +69,9 @@ export const AuthVault = {
 
   // --- Security Events ---
   onSecurityEvent: (callback: (event: SecurityEvent) => void) => {
-    return emitter.addListener('SecurityEvent', callback as (...args: readonly object[]) => unknown);
+    return emitter.addListener(
+      'SecurityEvent',
+      callback as (...args: readonly object[]) => unknown
+    );
   },
 };

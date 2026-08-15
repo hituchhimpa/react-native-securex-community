@@ -6,7 +6,9 @@ jest.mock('../NativeReactNativeAuthVault', () => {
   return {
     audit: jest.fn(() => ({ securityScore: 100, hardwareBacked: true })),
     encrypt: jest.fn((text: string) => Promise.resolve(`encrypted_${text}`)),
-    decrypt: jest.fn((text: string) => Promise.resolve(text.replace('encrypted_', ''))),
+    decrypt: jest.fn((text: string) =>
+      Promise.resolve(text.replace('encrypted_', ''))
+    ),
     setItem: jest.fn(() => Promise.resolve(true)),
     getItem: jest.fn(() => Promise.resolve('stored_value')),
     removeItem: jest.fn(() => Promise.resolve(true)),
@@ -51,7 +53,10 @@ describe('AuthVault JavaScript API Unit Tests', () => {
 
   it('should delegate secure native in-memory operations', () => {
     AuthVault.secureStore('key', 'val');
-    expect(NativeReactNativeAuthVault.secureStore).toHaveBeenCalledWith('key', 'val');
+    expect(NativeReactNativeAuthVault.secureStore).toHaveBeenCalledWith(
+      'key',
+      'val'
+    );
     expect(AuthVault.secureRead('key')).toBe('secure_val');
     AuthVault.secureWipe();
     expect(NativeReactNativeAuthVault.secureWipe).toHaveBeenCalled();

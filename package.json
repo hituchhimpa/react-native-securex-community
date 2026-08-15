@@ -1,6 +1,6 @@
 {
   "name": "@hituchhimpa/react-native-auth-vault",
-  "version": "1.1.1",
+  "version": "1.1.4",
   "description": "Native-first React Native security and authentication library",
   "main": "./lib/module/index.js",
   "expo": "./app.plugin.js",
@@ -17,6 +17,9 @@
     "android",
     "ios",
     "cpp",
+    "src",
+    "plugin",
+    "app.plugin.js",
     "*.podspec",
     "react-native.config.js",
     "!ios/build",

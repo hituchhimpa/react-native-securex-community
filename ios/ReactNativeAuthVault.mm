@@ -1,5 +1,6 @@
 #import "ReactNativeAuthVault.h"
 #import <DeviceCheck/DeviceCheck.h>
+#import <CommonCrypto/CommonCrypto.h>
 #import <CommonCrypto/CommonDigest.h>
 
 #if __has_include("ReactNativeAuthVault/ReactNativeAuthVault-Swift.h")
@@ -80,7 +81,7 @@
             if (error || !keyId) { reject(@"ERR_ATTESTATION", @"Failed to generate App Attest key", error); return; }
             NSData *nonceData = [nonce dataUsingEncoding:NSUTF8StringEncoding];
             NSMutableData *hashData = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
-            CC_SHA256(nonceData.bytes, (CC_LONG)nonceData.length, hashData.mutableBytes);
+            CC_SHA256(nonceData.bytes, (CC_LONG)nonceData.length, (unsigned char *)hashData.mutableBytes);
             [service attestKey:keyId clientDataHash:hashData completionHandler:^(NSData * _Nullable attestationObject, NSError * _Nullable error) {
                 if (error || !attestationObject) { reject(@"ERR_ATTESTATION", @"Failed to attest key", error); return; }
                 resolve([attestationObject base64EncodedStringWithOptions:0]);
@@ -229,11 +230,13 @@
     resolve(@(YES));
 }
 
+#ifdef RCT_NEW_ARCH_ENABLED
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
     (const facebook::react::ObjCTurboModule::InitParams &)params
 {
     return std::make_shared<facebook::react::NativeReactNativeAuthVaultSpecJSI>(params);
 }
+#endif
 
 + (NSString *)moduleName
 {

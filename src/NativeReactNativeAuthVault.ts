@@ -1,8 +1,11 @@
 import { TurboModuleRegistry, type TurboModule } from 'react-native';
 
+export type Double = number;
+export type UnsafeObject = Object;
+
 export interface Spec extends TurboModule {
   // --- Core Vault ---
-  audit(): Object;
+  audit(): UnsafeObject;
   encrypt(plainText: string, prompt: string): Promise<string>;
   decrypt(encryptedBase64: string, prompt: string): Promise<string>;
   setItem(key: string, value: string, prompt: string): Promise<boolean>;
@@ -18,7 +21,7 @@ export interface Spec extends TurboModule {
   isBiometricEnrollmentChanged(): boolean;
 
   // --- Session Key Expiry (v1.1.0) ---
-  setSessionTimeout(seconds: number): void;
+  setSessionTimeout(seconds: Double): void;
   isSessionExpired(): boolean;
   wipeSession(): void;
 
@@ -39,7 +42,7 @@ export interface Spec extends TurboModule {
 
   // --- Security Events (required for NativeEventEmitter) ---
   addListener(eventName: string): void;
-  removeListeners(count: number): void;
+  removeListeners(count: Double): void;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('ReactNativeAuthVault');

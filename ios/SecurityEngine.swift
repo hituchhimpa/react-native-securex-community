@@ -78,9 +78,7 @@ public class SecurityEngine: NSObject {
 
     @objc
     public static func isAppTampered() -> Bool {
-        #if targetEnvironment(simulator)
-        return false
-        #else
+        #if os(macOS)
         guard let bundlePath = Bundle.main.bundleURL.path.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed),
               let url = URL(string: "file://\(bundlePath)"),
               let staticCode = try? createStaticCode(url: url) else {
@@ -89,9 +87,12 @@ public class SecurityEngine: NSObject {
 
         let status = SecStaticCodeCheckValidityWithErrors(staticCode, SecCSFlags(rawValue: 0), nil, nil)
         return status != errSecSuccess
+        #else
+        return false
         #endif
     }
 
+    #if os(macOS)
     private static func createStaticCode(url: URL) throws -> SecStaticCode? {
         var staticCode: SecStaticCode?
         let cfURL = url as CFURL
@@ -99,6 +100,7 @@ public class SecurityEngine: NSObject {
         if status != errSecSuccess { return nil }
         return staticCode
     }
+    #endif
 
     // MARK: - Jailbreak Detection
 

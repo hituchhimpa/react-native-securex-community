@@ -18,10 +18,18 @@ export default function App() {
 
   const handleSetItem = async () => {
     try {
-      const prompt = requireBiometric ? 'Authenticate to securely store token' : '';
-      const success = await AuthVault.setItem(TOKEN_KEY, 'Super Secret Token Data', prompt);
+      const prompt = requireBiometric
+        ? 'Authenticate to securely store token'
+        : '';
+      const success = await AuthVault.setItem(
+        TOKEN_KEY,
+        'Super Secret Token Data',
+        prompt
+      );
       if (success) {
-        setStatus(`Token stored successfully! (Biometric: ${requireBiometric})`);
+        setStatus(
+          `Token stored successfully! (Biometric: ${requireBiometric})`
+        );
       }
     } catch (error: any) {
       setStatus(`Storage Error: ${error.message}`);
@@ -33,7 +41,9 @@ export default function App() {
       const prompt = requireBiometric ? 'Authenticate to retrieve token' : '';
       const result = await AuthVault.getItem(TOKEN_KEY, prompt);
       if (result) {
-        setStatus(`Retrieved Token: ${result} (Biometric: ${requireBiometric})`);
+        setStatus(
+          `Retrieved Token: ${result} (Biometric: ${requireBiometric})`
+        );
       } else {
         setStatus('No token found in storage.');
       }

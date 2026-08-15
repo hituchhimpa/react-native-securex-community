@@ -13,7 +13,10 @@ export type AuthVaultPluginProps = {
   faceIDPermission?: string | false;
 };
 
-const withAuthVault: ConfigPlugin<AuthVaultPluginProps | void> = (config, props) => {
+const withAuthVault: ConfigPlugin<AuthVaultPluginProps | void> = (
+  config,
+  props
+) => {
   config = withAuthVaultIOS(config, props || {});
   config = withAuthVaultAndroid(config, props || {});
   return config;
