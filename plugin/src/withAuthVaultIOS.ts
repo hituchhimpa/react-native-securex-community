@@ -9,13 +9,13 @@ export const withAuthVaultIOS: ConfigPlugin<AuthVaultPluginProps> = (
   config,
   { faceIDPermission }
 ) => {
-  return withInfoPlist(config, (config) => {
+  return withInfoPlist(config, (infoPlistConfig) => {
     if (faceIDPermission !== false) {
-      config.modResults.NSFaceIDUsageDescription =
+      infoPlistConfig.modResults.NSFaceIDUsageDescription =
         faceIDPermission ||
-        config.modResults.NSFaceIDUsageDescription ||
+        infoPlistConfig.modResults.NSFaceIDUsageDescription ||
         FACEID_USAGE;
     }
-    return config;
+    return infoPlistConfig;
   });
 };
