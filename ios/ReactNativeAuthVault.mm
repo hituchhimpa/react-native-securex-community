@@ -98,6 +98,12 @@
     return [SecurityEngine isBiometricEnrollmentChanged];
 }
 
+// MARK: - Vault Usability
+
+- (BOOL)isVaultUsable {
+    return [SecurityEngine isVaultUsable];
+}
+
 // MARK: - Session Key Expiry
 
 - (void)setSessionTimeout:(double)seconds {

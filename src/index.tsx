@@ -41,6 +41,12 @@ export const AuthVault = {
   isBiometricEnrollmentChanged: (): boolean =>
     ReactNativeAuthVault.isBiometricEnrollmentChanged(),
 
+  // --- Vault Usability ---
+  // Returns false when the device has no secure lock screen / passcode set — in that
+  // state, auth-gated keys can't be created, so encrypt/decrypt/setItem/getItem calls
+  // made with a non-empty `prompt` will always fail. Check this before using them.
+  isVaultUsable: (): boolean => ReactNativeAuthVault.isVaultUsable(),
+
   // --- Session Key Expiry ---
   setSessionTimeout: (seconds: number): void =>
     ReactNativeAuthVault.setSessionTimeout(seconds),

@@ -21,8 +21,20 @@ class CryptoEngine(private val context: Context) {
     private val androidKeyStore = "AndroidKeyStore"
 
     init {
-        generateKey(keyAliasBiometric, true)
-        generateKey(keyAliasNonBiometric, false)
+        // Keys requiring auth (biometric/device credential) can only be generated when the
+        // device has a secure lock screen. Without one, KeyStore throws
+        // InvalidAlgorithmParameterException — swallow it so the module still initializes;
+        // callers should check AuthVault.isVaultUsable() before relying on auth-gated calls.
+        try {
+            generateKey(keyAliasBiometric, true)
+        } catch (e: Exception) {
+            // no-op: biometric-gated key unavailable until the device gets a secure lock screen
+        }
+        try {
+            generateKey(keyAliasNonBiometric, false)
+        } catch (e: Exception) {
+            // no-op: extremely unlikely, but don't let it crash module construction
+        }
     }
 
     private fun generateKey(alias: String, requireAuth: Boolean) {

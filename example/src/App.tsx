@@ -7,6 +7,19 @@ export default function App() {
   const [requireBiometric, setRequireBiometric] = useState<boolean>(true);
   const TOKEN_KEY = 'my_secure_token';
 
+  const handleCheckVaultUsable = () => {
+    try {
+      const usable = AuthVault.isVaultUsable();
+      setStatus(
+        usable
+          ? 'Vault is usable: device has a secure lock screen set.'
+          : 'Vault is NOT usable: no PIN/pattern/password/biometric set on this device. Auth-gated calls (non-empty prompt) will fail.'
+      );
+    } catch (error: any) {
+      setStatus(`isVaultUsable Error: ${error.message}`);
+    }
+  };
+
   const handleAudit = () => {
     try {
       const result = AuthVault.audit();
@@ -65,6 +78,9 @@ export default function App() {
 
   return (
     <View style={styles.container}>
+      <Button title="Check Vault Usable" onPress={handleCheckVaultUsable} />
+      <View style={styles.spacer} />
+
       <Button title="Run Audit" onPress={handleAudit} />
       <View style={styles.spacer} />
 
