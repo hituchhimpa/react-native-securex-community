@@ -4,7 +4,10 @@ import ReactNativeAuthVault from './NativeReactNativeAuthVault';
 const emitter = new NativeEventEmitter(ReactNativeAuthVault as any);
 
 export type SecurityEventType =
-  'SESSION_EXPIRED' | 'BIOMETRIC_CHANGED' | 'HOOKING_DETECTED' | 'APP_TAMPERED';
+  | 'SESSION_EXPIRED'
+  | 'BIOMETRIC_CHANGED'
+  | 'HOOKING_DETECTED'
+  | 'APP_TAMPERED';
 
 export interface SecurityEvent {
   type: SecurityEventType;
