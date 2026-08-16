@@ -16,6 +16,7 @@ jest.mock('../NativeReactNativeAuthVault', () => {
     setOverlayProtectionEnabled: jest.fn(),
     generateAttestation: jest.fn(() => Promise.resolve('mock_token')),
     isBiometricEnrollmentChanged: jest.fn(() => false),
+    hasSecureLockScreen: jest.fn(() => true),
     setSessionTimeout: jest.fn(),
     isSessionExpired: jest.fn(() => false),
     wipeSession: jest.fn(),
@@ -60,6 +61,11 @@ describe('AuthVault JavaScript API Unit Tests', () => {
     expect(AuthVault.secureRead('key')).toBe('secure_val');
     AuthVault.secureWipe();
     expect(NativeReactNativeAuthVault.secureWipe).toHaveBeenCalled();
+  });
+
+  it('should report vault usability', () => {
+    expect(AuthVault.hasSecureLockScreen()).toBe(true);
+    expect(NativeReactNativeAuthVault.hasSecureLockScreen).toHaveBeenCalled();
   });
 
   it('should delegate cryptographic signing operations', async () => {

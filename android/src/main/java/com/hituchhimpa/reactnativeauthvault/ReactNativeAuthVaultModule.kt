@@ -114,6 +114,12 @@ class ReactNativeAuthVaultModule(reactContext: ReactApplicationContext) :
     return SecurityEngine.isBiometricEnrollmentChanged(reactApplicationContext)
   }
 
+  // MARK: - Vault Usability
+
+  override fun hasSecureLockScreen(): Boolean {
+    return SecurityEngine.hasSecureLockScreen(reactApplicationContext)
+  }
+
   // MARK: - Session Key Expiry
 
   override fun setSessionTimeout(seconds: Double) {

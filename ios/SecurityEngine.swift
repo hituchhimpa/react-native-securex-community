@@ -22,6 +22,7 @@ public class SecurityEngine: NSObject {
         let context = LAContext()
         var error: NSError?
         let biometricEnabled = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
+        let secureLockScreen = hasSecureLockScreen()
 
         var score = 100
         if jailbroken { score -= 50 }
@@ -36,6 +37,7 @@ public class SecurityEngine: NSObject {
             "secureStorage": true,
             "hardwareBacked": true,
             "biometricEnabled": biometricEnabled,
+            "hasSecureLockScreen": secureLockScreen,
             "rooted": false,
             "jailbroken": jailbroken,
             "emulator": emulator,
@@ -72,6 +74,17 @@ public class SecurityEngine: NSObject {
             defaults.set(currentState, forKey: enrollmentStateKey)
             return false
         }
+    }
+
+    // MARK: - Vault Usability
+    // Auth-gated keys (Secure Enclave, .userPresence) require a device passcode to be set.
+    // Without one, key generation/access will always fail. Apps should check this before
+    // calling encrypt/decrypt/setItem/getItem with a non-empty prompt.
+    @objc
+    public static func hasSecureLockScreen() -> Bool {
+        let context = LAContext()
+        var error: NSError?
+        return context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error)
     }
 
     // MARK: - Runtime App Tamper Detection

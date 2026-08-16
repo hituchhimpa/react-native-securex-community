@@ -98,6 +98,12 @@
     return [SecurityEngine isBiometricEnrollmentChanged];
 }
 
+// MARK: - Vault Usability
+
+- (BOOL)hasSecureLockScreen {
+    return [SecurityEngine hasSecureLockScreen];
+}
+
 // MARK: - Session Key Expiry
 
 - (void)setSessionTimeout:(double)seconds {
