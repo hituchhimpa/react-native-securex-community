@@ -116,8 +116,8 @@ class ReactNativeAuthVaultModule(reactContext: ReactApplicationContext) :
 
   // MARK: - Vault Usability
 
-  override fun isVaultUsable(): Boolean {
-    return SecurityEngine.isVaultUsable(reactApplicationContext)
+  override fun hasSecureLockScreen(): Boolean {
+    return SecurityEngine.hasSecureLockScreen(reactApplicationContext)
   }
 
   // MARK: - Session Key Expiry

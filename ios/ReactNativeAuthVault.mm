@@ -100,8 +100,8 @@
 
 // MARK: - Vault Usability
 
-- (BOOL)isVaultUsable {
-    return [SecurityEngine isVaultUsable];
+- (BOOL)hasSecureLockScreen {
+    return [SecurityEngine hasSecureLockScreen];
 }
 
 // MARK: - Session Key Expiry

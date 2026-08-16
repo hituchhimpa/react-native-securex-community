@@ -21,7 +21,7 @@ export interface Spec extends TurboModule {
   isBiometricEnrollmentChanged(): boolean;
 
   // --- Vault Usability ---
-  isVaultUsable(): boolean;
+  hasSecureLockScreen(): boolean;
 
   // --- Session Key Expiry (v1.1.0) ---
   setSessionTimeout(seconds: Double): void;

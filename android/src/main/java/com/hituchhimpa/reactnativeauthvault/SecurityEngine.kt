@@ -25,7 +25,7 @@ object SecurityEngine {
         val biometricEnabled = androidx.biometric.BiometricManager.from(context)
             .canAuthenticate(androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG) ==
             androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS
-        val vaultUsable = isVaultUsable(context)
+        val secureLockScreen = hasSecureLockScreen(context)
 
         var score = 100
         if (rooted) score -= 50
@@ -41,7 +41,7 @@ object SecurityEngine {
             "secureStorage" to true,
             "hardwareBacked" to hardwareBacked,
             "biometricEnabled" to biometricEnabled,
-            "vaultUsable" to vaultUsable,
+            "hasSecureLockScreen" to secureLockScreen,
             "rooted" to rooted,
             "jailbroken" to false,
             "emulator" to emulator,
@@ -58,7 +58,7 @@ object SecurityEngine {
     // lock screen (PIN/pattern/password/biometric). Without one, KeyStore refuses to generate
     // the key, so those calls will always fail. Apps should check this before calling
     // encrypt/decrypt/setItem/getItem with a non-empty prompt.
-    fun isVaultUsable(context: Context): Boolean {
+    fun hasSecureLockScreen(context: Context): Boolean {
         val keyguardManager = context.getSystemService(Context.KEYGUARD_SERVICE) as? android.app.KeyguardManager
             ?: return false
         return keyguardManager.isDeviceSecure

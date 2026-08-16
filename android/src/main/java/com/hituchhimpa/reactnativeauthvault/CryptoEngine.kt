@@ -24,7 +24,7 @@ class CryptoEngine(private val context: Context) {
         // Keys requiring auth (biometric/device credential) can only be generated when the
         // device has a secure lock screen. Without one, KeyStore throws
         // InvalidAlgorithmParameterException — swallow it so the module still initializes;
-        // callers should check AuthVault.isVaultUsable() before relying on auth-gated calls.
+        // callers should check AuthVault.hasSecureLockScreen() before relying on auth-gated calls.
         try {
             generateKey(keyAliasBiometric, true)
         } catch (e: Exception) {

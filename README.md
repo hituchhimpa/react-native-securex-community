@@ -168,13 +168,13 @@ const posture = AuthVault.audit();
 - `biometricEnrollmentChanged`: `boolean` (Biometrics added/deleted since setup).
 - `hardwareBacked`: `boolean` (Device hardware supports secure keys).
 - `biometricEnabled`: `boolean` (User has enrolled biometrics).
-- `vaultUsable`: `boolean` (Device has a secure lock screen — see `isVaultUsable()` below).
+- `hasSecureLockScreen`: `boolean` (Device has a PIN/pattern/password/biometric configured — see below).
 
-#### `AuthVault.isVaultUsable(): boolean`
+#### `AuthVault.hasSecureLockScreen(): boolean`
 Synchronously checks whether the device has a secure lock screen (PIN, pattern, password, or biometric) configured. Auth-gated keys used by `encrypt`/`decrypt`/`setItem`/`getItem` when called with a non-empty `prompt` can only be created once a secure lock screen exists — without one, those calls will always fail. Check this before calling them with a prompt, e.g. to prompt the user to set a device PIN first.
 
 ```typescript
-if (!AuthVault.isVaultUsable()) {
+if (!AuthVault.hasSecureLockScreen()) {
   // Ask the user to set a device PIN/passcode before storing anything biometric-gated.
 }
 ```
