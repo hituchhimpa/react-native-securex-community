@@ -6,6 +6,12 @@ import com.facebook.react.bridge.WritableMap
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.modules.core.DeviceEventManagerModule
 import androidx.fragment.app.FragmentActivity
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricPrompt
+import androidx.core.content.ContextCompat
+import androidx.core.hardware.fingerprint.FingerprintManagerCompat
+import android.content.pm.PackageManager
+import android.os.Build
 import java.security.KeyStore
 
 class ReactNativeSecureXModule(reactContext: ReactApplicationContext) :
@@ -106,6 +112,194 @@ class ReactNativeSecureXModule(reactContext: ReactApplicationContext) :
     integrityManager.requestIntegrityToken(request)
       .addOnSuccessListener { promise.resolve(it.token()) }
       .addOnFailureListener { promise.reject("ERR_ATTESTATION", "Failed to generate attestation", it) }
+  }
+
+  // MARK: - Biometric Hardware & Enrollment Detection
+
+  override fun isSensorAvailable(promise: Promise) {
+    try {
+      val biometricManager = BiometricManager.from(reactApplicationContext)
+      val authenticators = BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.BIOMETRIC_WEAK
+      val canAuthenticate = biometricManager.canAuthenticate(authenticators)
+
+      val pm = reactApplicationContext.packageManager
+      val hasFingerprintHardware = pm.hasSystemFeature(PackageManager.FEATURE_FINGERPRINT) ||
+        FingerprintManagerCompat.from(reactApplicationContext).isHardwareDetected()
+
+      val hasFaceHardware = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && pm.hasSystemFeature(PackageManager.FEATURE_FACE)) ||
+        pm.hasSystemFeature("android.hardware.biometrics.face") ||
+        pm.hasSystemFeature("com.samsung.android.bio.face")
+
+      val hasIrisHardware = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && pm.hasSystemFeature(PackageManager.FEATURE_IRIS)) ||
+        pm.hasSystemFeature("android.hardware.biometrics.iris") ||
+        pm.hasSystemFeature("com.samsung.android.bio.iris")
+
+      val supportedArray = Arguments.createArray()
+      val supportedList = mutableListOf<String>()
+      if (hasFingerprintHardware) {
+        supportedList.add("Fingerprint")
+        supportedArray.pushString("Fingerprint")
+      }
+      if (hasFaceHardware) {
+        supportedList.add("Face")
+        supportedArray.pushString("Face")
+      }
+      if (hasIrisHardware) {
+        supportedList.add("Iris")
+        supportedArray.pushString("Iris")
+      }
+
+      val biometryType = when {
+        supportedList.size > 1 -> "Biometrics"
+        supportedList.size == 1 -> supportedList[0]
+        else -> "Biometrics"
+      }
+
+      val map = Arguments.createMap()
+      map.putArray("biometricsSupported", supportedArray)
+      map.putBoolean("hasFingerprint", hasFingerprintHardware)
+      map.putBoolean("hasFace", hasFaceHardware)
+      map.putBoolean("hasIris", hasIrisHardware)
+      map.putString("biometryType", biometryType)
+
+      when (canAuthenticate) {
+        BiometricManager.BIOMETRIC_SUCCESS -> {
+          map.putBoolean("available", true)
+          map.putBoolean("enrolled", true)
+        }
+        BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
+          map.putBoolean("available", false)
+          map.putBoolean("enrolled", false)
+          map.putString("error", "BIOMETRIC_ERROR_NONE_ENROLLED")
+        }
+        BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
+          map.putBoolean("available", false)
+          map.putBoolean("enrolled", false)
+          map.putString("error", "BIOMETRIC_ERROR_NO_HARDWARE")
+        }
+        BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> {
+          map.putBoolean("available", false)
+          map.putBoolean("enrolled", false)
+          map.putString("error", "BIOMETRIC_ERROR_HW_UNAVAILABLE")
+        }
+        BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED -> {
+          map.putBoolean("available", false)
+          map.putBoolean("enrolled", true)
+          map.putString("error", "BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED")
+        }
+        else -> {
+          map.putBoolean("available", false)
+          map.putBoolean("enrolled", false)
+          map.putString("error", "BIOMETRICS_UNAVAILABLE")
+        }
+      }
+      promise.resolve(map)
+    } catch (e: Exception) {
+      val map = Arguments.createMap()
+      map.putBoolean("available", false)
+      map.putBoolean("enrolled", false)
+      map.putArray("biometricsSupported", Arguments.createArray())
+      map.putBoolean("hasFingerprint", false)
+      map.putBoolean("hasFace", false)
+      map.putBoolean("hasIris", false)
+      map.putString("error", e.message ?: "Unknown error")
+      promise.resolve(map)
+    }
+  }
+
+  // MARK: - Biometric Authentication & PKI Signatures (react-native-biometrics compatible)
+
+  private val BIOMETRIC_DEFAULT_KEY_TAG = "SecureX_Biometric_Login"
+
+  override fun simplePrompt(promptMessage: String, cancelButtonText: String, promise: Promise) {
+    val activity = getReactApplicationContext().getCurrentActivity() as? FragmentActivity ?: run {
+      val map = Arguments.createMap()
+      map.putBoolean("success", false)
+      map.putString("error", "Activity is null or not a FragmentActivity")
+      promise.resolve(map)
+      return
+    }
+
+    activity.runOnUiThread {
+      val executor = ContextCompat.getMainExecutor(activity)
+      val biometricPrompt = BiometricPrompt(activity, executor, object : BiometricPrompt.AuthenticationCallback() {
+        override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+          val map = Arguments.createMap()
+          map.putBoolean("success", false)
+          map.putString("error", errString.toString())
+          promise.resolve(map)
+        }
+
+        override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+          val map = Arguments.createMap()
+          map.putBoolean("success", true)
+          promise.resolve(map)
+        }
+      })
+
+      val promptInfo = BiometricPrompt.PromptInfo.Builder()
+        .setTitle(promptMessage)
+        .setNegativeButtonText(if (cancelButtonText.isNotEmpty()) cancelButtonText else "Cancel")
+        .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.BIOMETRIC_WEAK)
+        .build()
+
+      biometricPrompt.authenticate(promptInfo)
+    }
+  }
+
+  override fun createKeys(promise: Promise) {
+    try {
+      val publicKey = SigningEngine.generateBiometricSigningKeyPair(BIOMETRIC_DEFAULT_KEY_TAG, reactApplicationContext)
+      val map = Arguments.createMap()
+      map.putString("publicKey", publicKey)
+      promise.resolve(map)
+    } catch (e: Exception) {
+      promise.reject("ERR_CREATE_KEYS", e.message ?: "Failed to generate biometric keys")
+    }
+  }
+
+  override fun biometricKeysExist(promise: Promise) {
+    val exists = SigningEngine.biometricKeysExist(BIOMETRIC_DEFAULT_KEY_TAG)
+    val map = Arguments.createMap()
+    map.putBoolean("keysExist", exists)
+    promise.resolve(map)
+  }
+
+  override fun deleteKeys(promise: Promise) {
+    val success = SigningEngine.deleteSigningKeyPair(BIOMETRIC_DEFAULT_KEY_TAG)
+    val map = Arguments.createMap()
+    map.putBoolean("success", success)
+    promise.resolve(map)
+  }
+
+  override fun createSignature(promptMessage: String, payload: String, cancelButtonText: String, promise: Promise) {
+    val activity = getReactApplicationContext().getCurrentActivity() as? FragmentActivity ?: run {
+      val map = Arguments.createMap()
+      map.putBoolean("success", false)
+      map.putString("error", "Activity is null or not a FragmentActivity")
+      promise.resolve(map)
+      return
+    }
+
+    SigningEngine.signDataWithBiometrics(
+      activity,
+      BIOMETRIC_DEFAULT_KEY_TAG,
+      payload,
+      promptMessage,
+      cancelButtonText,
+      onSuccess = { sig ->
+        val map = Arguments.createMap()
+        map.putBoolean("success", true)
+        map.putString("signature", sig)
+        promise.resolve(map)
+      },
+      onError = { err ->
+        val map = Arguments.createMap()
+        map.putBoolean("success", false)
+        map.putString("error", err)
+        promise.resolve(map)
+      }
+    )
   }
 
   // MARK: - Biometric Enrollment Change Detection

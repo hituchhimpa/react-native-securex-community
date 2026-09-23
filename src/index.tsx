@@ -15,6 +15,59 @@ export interface SecurityEvent {
   timestamp: number;
 }
 
+export type BiometryType =
+  | 'TouchID'
+  | 'FaceID'
+  | 'Biometrics'
+  | 'Fingerprint'
+  | 'Face'
+  | 'Iris';
+
+export interface SensorResult {
+  available: boolean;
+  enrolled?: boolean;
+  biometryType?: BiometryType;
+  biometricsSupported?: string[];
+  hasFingerprint?: boolean;
+  hasFace?: boolean;
+  hasIris?: boolean;
+  error?: string;
+}
+
+export interface SimplePromptOptions {
+  promptMessage: string;
+  cancelButtonText?: string;
+}
+
+export interface SimplePromptResult {
+  success: boolean;
+  error?: string;
+}
+
+export interface CreateKeysResult {
+  publicKey: string;
+}
+
+export interface BiometricKeysExistResult {
+  keysExist: boolean;
+}
+
+export interface DeleteKeysResult {
+  success: boolean;
+}
+
+export interface CreateSignatureOptions {
+  promptMessage: string;
+  payload: string;
+  cancelButtonText?: string;
+}
+
+export interface CreateSignatureResult {
+  success: boolean;
+  signature?: string;
+  error?: string;
+}
+
 export const SecureX = {
   // --- Core Vault ---
   audit: (): Object => ReactNativeSecureX.audit(),
@@ -37,9 +90,61 @@ export const SecureX = {
   generateAttestation: (nonce: string): Promise<string> =>
     ReactNativeSecureX.generateAttestation(nonce),
 
-  // --- Biometric Enrollment Change Detection ---
+  // --- Biometrics & Sensor Detection ---
+  isSensorAvailable: (): Promise<SensorResult> =>
+    ReactNativeSecureX.isSensorAvailable() as Promise<SensorResult>,
   isBiometricEnrollmentChanged: (): boolean =>
     ReactNativeSecureX.isBiometricEnrollmentChanged(),
+
+  // --- Biometric Authentication & PKI Signatures ---
+  simplePrompt: (options: SimplePromptOptions): Promise<SimplePromptResult> =>
+    ReactNativeSecureX.simplePrompt(
+      options.promptMessage,
+      options.cancelButtonText || ''
+    ) as Promise<SimplePromptResult>,
+
+  createKeys: (): Promise<CreateKeysResult> =>
+    ReactNativeSecureX.createKeys() as Promise<CreateKeysResult>,
+
+  biometricKeysExist: (): Promise<BiometricKeysExistResult> =>
+    ReactNativeSecureX.biometricKeysExist() as Promise<BiometricKeysExistResult>,
+
+  deleteKeys: (): Promise<DeleteKeysResult> =>
+    ReactNativeSecureX.deleteKeys() as Promise<DeleteKeysResult>,
+
+  createSignature: (
+    options: CreateSignatureOptions
+  ): Promise<CreateSignatureResult> =>
+    ReactNativeSecureX.createSignature(
+      options.promptMessage,
+      options.payload,
+      options.cancelButtonText || ''
+    ) as Promise<CreateSignatureResult>,
+
+  // --- Namespaced Biometrics (react-native-biometrics compatible) ---
+  biometrics: {
+    isSensorAvailable: (): Promise<SensorResult> =>
+      ReactNativeSecureX.isSensorAvailable() as Promise<SensorResult>,
+    simplePrompt: (options: SimplePromptOptions): Promise<SimplePromptResult> =>
+      ReactNativeSecureX.simplePrompt(
+        options.promptMessage,
+        options.cancelButtonText || ''
+      ) as Promise<SimplePromptResult>,
+    createKeys: (): Promise<CreateKeysResult> =>
+      ReactNativeSecureX.createKeys() as Promise<CreateKeysResult>,
+    biometricKeysExist: (): Promise<BiometricKeysExistResult> =>
+      ReactNativeSecureX.biometricKeysExist() as Promise<BiometricKeysExistResult>,
+    deleteKeys: (): Promise<DeleteKeysResult> =>
+      ReactNativeSecureX.deleteKeys() as Promise<DeleteKeysResult>,
+    createSignature: (
+      options: CreateSignatureOptions
+    ): Promise<CreateSignatureResult> =>
+      ReactNativeSecureX.createSignature(
+        options.promptMessage,
+        options.payload,
+        options.cancelButtonText || ''
+      ) as Promise<CreateSignatureResult>,
+  },
 
   // --- Vault Usability ---
   // Returns false when the device has no secure lock screen / passcode set — in that

@@ -170,6 +170,84 @@ const posture = SecureX.audit();
 - `biometricEnabled`: `boolean` (User has enrolled biometrics).
 - `hasSecureLockScreen`: `boolean` (Device has a PIN/pattern/password/biometric configured — see below).
 
+#### `SecureX.isSensorAvailable(): Promise<SensorResult>`
+Detects whether biometric hardware is present, enrolled, and returns granular sensor hardware capabilities:
+
+```typescript
+const {
+  available,           // boolean: true if sensor is ready & biometrics enrolled
+  enrolled,            // boolean: true if user has enrolled biometrics
+  biometryType,        // 'FaceID' | 'TouchID' | 'Fingerprint' | 'Face' | 'Iris' | 'Biometrics'
+  biometricsSupported, // string[]: e.g. ['Fingerprint', 'Face']
+  hasFingerprint,      // boolean: true if device has fingerprint sensor
+  hasFace,             // boolean: true if device has face recognition hardware
+  hasIris,             // boolean: true if device has iris scanner
+  error,
+} = await SecureX.isSensorAvailable();
+
+console.log('Supported sensors on device:', biometricsSupported);
+// e.g. ['Fingerprint', 'Face'] on modern Android, ['FaceID'] on modern iPhone
+```
+
+#### `SecureX.simplePrompt(options): Promise<SimplePromptResult>`
+Presents the native OS biometric prompt (Face ID / Touch ID / Fingerprint) for simple local authentication (e.g. app unlock, screen lock).
+
+```typescript
+const { success, error } = await SecureX.simplePrompt({
+  promptMessage: 'Confirm identity to log in',
+  cancelButtonText: 'Use Passcode', // Android
+});
+
+if (success) {
+  console.log('Biometric authentication succeeded!');
+} else {
+  console.log('Authentication failed or cancelled:', error);
+}
+```
+
+#### `SecureX.createKeys(): Promise<CreateKeysResult>`
+Generates a 256-bit ECC P-256 key pair inside the Secure Enclave / Android Keystore where the private key requires biometric authentication for signing. Returns the Base64 DER/PEM public key to register with your backend.
+
+```typescript
+const { publicKey } = await SecureX.createKeys();
+// Send publicKey to your backend during user registration
+```
+
+#### `SecureX.biometricKeysExist(): Promise<BiometricKeysExistResult>`
+Checks if biometric hardware keys exist on the device.
+
+```typescript
+const { keysExist } = await SecureX.biometricKeysExist();
+```
+
+#### `SecureX.deleteKeys(): Promise<DeleteKeysResult>`
+Deletes the biometric hardware keys from the secure hardware.
+
+```typescript
+const { success } = await SecureX.deleteKeys();
+```
+
+#### `SecureX.createSignature(options): Promise<CreateSignatureResult>`
+Prompts the user for biometric authentication, and upon success, signs the given payload with the hardware private key. Ideal for server-verified biometric login and transaction approval.
+
+```typescript
+const { success, signature, error } = await SecureX.createSignature({
+  promptMessage: 'Authorize payment with biometrics',
+  payload: serverChallengeNonce,
+});
+
+if (success && signature) {
+  // Send signature back to backend to verify with user's stored public key
+}
+```
+
+> [!TIP]
+> You can also access all these methods under the **`SecureX.biometrics`** namespace:
+> `SecureX.biometrics.isSensorAvailable()`
+> `SecureX.biometrics.simplePrompt()`
+> `SecureX.biometrics.createKeys()`
+> `SecureX.biometrics.createSignature()`
+
 #### `SecureX.hasSecureLockScreen(): boolean`
 Synchronously checks whether the device has a secure lock screen (PIN, pattern, password, or biometric) configured. Auth-gated keys used by `encrypt`/`decrypt`/`setItem`/`getItem` when called with a non-empty `prompt` can only be created once a secure lock screen exists — without one, those calls will always fail. Check this before calling them with a prompt, e.g. to prompt the user to set a device PIN first.
 

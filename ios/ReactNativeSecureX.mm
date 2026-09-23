@@ -2,6 +2,7 @@
 #import <DeviceCheck/DeviceCheck.h>
 #import <CommonCrypto/CommonCrypto.h>
 #import <CommonCrypto/CommonDigest.h>
+#import <LocalAuthentication/LocalAuthentication.h>
 
 #if __has_include("ReactNativeSecureX/ReactNativeSecureX-Swift.h")
 #import "ReactNativeSecureX/ReactNativeSecureX-Swift.h"
@@ -90,6 +91,105 @@
     } else {
         reject(@"ERR_UNSUPPORTED", @"App Attest requires iOS 14.0 or newer", nil);
     }
+}
+
+// MARK: - Biometric Hardware & Enrollment Detection
+
+- (void)isSensorAvailable:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+    LAContext *context = [[LAContext alloc] init];
+    NSError *error = nil;
+    BOOL canEvaluate = [context canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&error];
+    
+    NSString *biometryType = @"Biometrics";
+    NSMutableArray *supported = [NSMutableArray array];
+    BOOL hasFace = NO;
+    BOOL hasFingerprint = NO;
+
+    if (@available(iOS 11.0, *)) {
+        if (context.biometryType == LABiometryTypeFaceID) {
+            biometryType = @"FaceID";
+            [supported addObject:@"FaceID"];
+            hasFace = YES;
+        } else if (context.biometryType == LABiometryTypeTouchID) {
+            biometryType = @"TouchID";
+            [supported addObject:@"TouchID"];
+            hasFingerprint = YES;
+        }
+    }
+    
+    if (canEvaluate) {
+        resolve(@{
+            @"available": @(YES),
+            @"enrolled": @(YES),
+            @"biometryType": biometryType,
+            @"biometricsSupported": supported,
+            @"hasFingerprint": @(hasFingerprint),
+            @"hasFace": @(hasFace),
+            @"hasIris": @(NO)
+        });
+    } else {
+        BOOL enrolled = (error != nil && error.code != LAErrorBiometryNotEnrolled);
+        NSString *errorString = error ? error.localizedDescription : @"Biometrics not available";
+        resolve(@{
+            @"available": @(NO),
+            @"enrolled": @(enrolled ? YES : NO),
+            @"biometryType": biometryType,
+            @"biometricsSupported": supported,
+            @"hasFingerprint": @(hasFingerprint),
+            @"hasFace": @(hasFace),
+            @"hasIris": @(NO),
+            @"error": errorString
+        });
+    }
+}
+
+// MARK: - Biometric Authentication & PKI Signatures (react-native-biometrics compatible)
+
+static NSString *const kSecureXBiometricKeyTag = @"com.hituchhimpa.reactnativesecurex.biometric.key";
+
+- (void)simplePrompt:(NSString *)promptMessage cancelButtonText:(NSString *)cancelButtonText resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+    LAContext *context = [[LAContext alloc] init];
+    if (cancelButtonText && cancelButtonText.length > 0) {
+        context.localizedCancelTitle = cancelButtonText;
+    }
+    [context evaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics localizedReason:promptMessage reply:^(BOOL success, NSError * _Nullable error) {
+        if (success) {
+            resolve(@{@"success": @(YES)});
+        } else {
+            NSString *errorString = error ? error.localizedDescription : @"Authentication failed";
+            resolve(@{@"success": @(NO), @"error": errorString});
+        }
+    }];
+}
+
+- (void)createKeys:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+    [SigningEngine generateBiometricKeyPairWithTag:kSecureXBiometricKeyTag completion:^(NSString * _Nullable publicKeyPEM, NSString * _Nullable error) {
+        if (error || !publicKeyPEM) {
+            reject(@"ERR_CREATE_KEYS", error ?: @"Failed to generate biometric keys", nil);
+        } else {
+            resolve(@{@"publicKey": publicKeyPEM});
+        }
+    }];
+}
+
+- (void)biometricKeysExist:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+    BOOL exists = [SigningEngine biometricKeysExistWithTag:kSecureXBiometricKeyTag];
+    resolve(@{@"keysExist": @(exists)});
+}
+
+- (void)deleteKeys:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+    BOOL success = [SigningEngine deleteSigningKeyPairWithTag:kSecureXBiometricKeyTag];
+    resolve(@{@"success": @(success)});
+}
+
+- (void)createSignature:(NSString *)promptMessage payload:(NSString *)payload cancelButtonText:(NSString *)cancelButtonText resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+    [SigningEngine signDataWithBiometricsWithTag:kSecureXBiometricKeyTag data:payload promptMessage:promptMessage completion:^(NSString * _Nullable signature, NSString * _Nullable error) {
+        if (error || !signature) {
+            resolve(@{@"success": @(NO), @"error": error ?: @"Signature creation failed"});
+        } else {
+            resolve(@{@"success": @(YES), @"signature": signature});
+        }
+    }];
 }
 
 // MARK: - Biometric Enrollment Change Detection

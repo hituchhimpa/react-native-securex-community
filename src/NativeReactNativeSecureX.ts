@@ -17,8 +17,21 @@ export interface Spec extends TurboModule {
   setOverlayProtectionEnabled(enabled: boolean): void;
   generateAttestation(nonce: string): Promise<string>;
 
-  // --- Biometric Enrollment Change Detection (v1.1.0) ---
+  // --- Biometric Hardware & Enrollment Detection ---
+  isSensorAvailable(): Promise<UnsafeObject>;
   isBiometricEnrollmentChanged(): boolean;
+  simplePrompt(
+    promptMessage: string,
+    cancelButtonText: string
+  ): Promise<UnsafeObject>;
+  createKeys(): Promise<UnsafeObject>;
+  biometricKeysExist(): Promise<UnsafeObject>;
+  deleteKeys(): Promise<UnsafeObject>;
+  createSignature(
+    promptMessage: string,
+    payload: string,
+    cancelButtonText: string
+  ): Promise<UnsafeObject>;
 
   // --- Vault Usability ---
   hasSecureLockScreen(): boolean;
