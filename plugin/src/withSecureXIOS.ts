@@ -1,13 +1,13 @@
 import { withInfoPlist } from '@expo/config-plugins';
 import type { ConfigPlugin } from '@expo/config-plugins';
-import type { AuthVaultPluginProps } from './index';
+import type { SecureXPluginProps } from './index';
 
 const FACEID_USAGE =
   'Allow $(PRODUCT_NAME) to use Face ID for secure authentication';
 
-export const withAuthVaultIOS: ConfigPlugin<AuthVaultPluginProps> = (
+export const withSecureXIOS: ConfigPlugin<SecureXPluginProps> = (
   config,
-  { faceIDPermission }
+  { faceIDPermission } = {}
 ) => {
   return withInfoPlist(config, (infoPlistConfig) => {
     if (faceIDPermission !== false) {
@@ -19,3 +19,5 @@ export const withAuthVaultIOS: ConfigPlugin<AuthVaultPluginProps> = (
     return infoPlistConfig;
   });
 };
+
+export const withAuthVaultIOS = withSecureXIOS;

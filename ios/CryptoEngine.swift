@@ -4,8 +4,8 @@ import Security
 
 @objc(CryptoEngine)
 public class CryptoEngine: NSObject {
-    private let keyTagBiometric = "com.hituchhimpa.reactnativeauthvault.key.biometric".data(using: .utf8)!
-    private let keyTagNonBiometric = "com.hituchhimpa.reactnativeauthvault.key.nonbiometric".data(using: .utf8)!
+    private let keyTagBiometric = "com.hituchhimpa.reactnativesecurex.key.biometric".data(using: .utf8)!
+    private let keyTagNonBiometric = "com.hituchhimpa.reactnativesecurex.key.nonbiometric".data(using: .utf8)!
 
     @objc
     public func initializeKey() {

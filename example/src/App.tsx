@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Text, View, StyleSheet, Button, Switch } from 'react-native';
-import { AuthVault } from '@hituchhimpa/react-native-auth-vault';
+import { SecureX } from '@hituchhimpa/react-native-securex';
 
 export default function App() {
   const [status, setStatus] = useState<string>('');
@@ -9,7 +9,7 @@ export default function App() {
 
   const handleCheckSecureLockScreen = () => {
     try {
-      const usable = AuthVault.hasSecureLockScreen();
+      const usable = SecureX.hasSecureLockScreen();
       setStatus(
         usable
           ? 'Vault is usable: device has a secure lock screen set.'
@@ -22,7 +22,7 @@ export default function App() {
 
   const handleAudit = () => {
     try {
-      const result = AuthVault.audit();
+      const result = SecureX.audit();
       setStatus(`Audit Result: ${JSON.stringify(result, null, 2)}`);
     } catch (error: any) {
       setStatus(`Audit Error: ${error.message}`);
@@ -34,7 +34,7 @@ export default function App() {
       const prompt = requireBiometric
         ? 'Authenticate to securely store token'
         : '';
-      const success = await AuthVault.setItem(
+      const success = await SecureX.setItem(
         TOKEN_KEY,
         'Super Secret Token Data',
         prompt
@@ -52,7 +52,7 @@ export default function App() {
   const handleGetItem = async () => {
     try {
       const prompt = requireBiometric ? 'Authenticate to retrieve token' : '';
-      const result = await AuthVault.getItem(TOKEN_KEY, prompt);
+      const result = await SecureX.getItem(TOKEN_KEY, prompt);
       if (result) {
         setStatus(
           `Retrieved Token: ${result} (Biometric: ${requireBiometric})`
@@ -67,7 +67,7 @@ export default function App() {
 
   const handleRemoveItem = async () => {
     try {
-      const success = await AuthVault.removeItem(TOKEN_KEY);
+      const success = await SecureX.removeItem(TOKEN_KEY);
       if (success) {
         setStatus('Token removed successfully.');
       }

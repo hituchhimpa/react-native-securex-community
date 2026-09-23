@@ -1,4 +1,4 @@
-package com.hituchhimpa.reactnativeauthvault
+package com.hituchhimpa.reactnativesecurex
 
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
@@ -8,8 +8,8 @@ import com.facebook.react.modules.core.DeviceEventManagerModule
 import androidx.fragment.app.FragmentActivity
 import java.security.KeyStore
 
-class ReactNativeAuthVaultModule(reactContext: ReactApplicationContext) :
-  NativeReactNativeAuthVaultSpec(reactContext) {
+class ReactNativeSecureXModule(reactContext: ReactApplicationContext) :
+  NativeReactNativeSecureXSpec(reactContext) {
 
   private val cryptoEngine = CryptoEngine(reactContext)
 
@@ -34,7 +34,7 @@ class ReactNativeAuthVaultModule(reactContext: ReactApplicationContext) :
   }
 
   override fun encrypt(plainText: String, prompt: String, promise: Promise) {
-    val activity = currentActivity as? FragmentActivity ?: run {
+    val activity = getReactApplicationContext().getCurrentActivity() as? FragmentActivity ?: run {
       promise.reject("ERR_ACTIVITY", "Activity is null or not a FragmentActivity"); return
     }
     cryptoEngine.encrypt(activity, plainText, prompt,
@@ -43,7 +43,7 @@ class ReactNativeAuthVaultModule(reactContext: ReactApplicationContext) :
   }
 
   override fun decrypt(encryptedBase64: String, prompt: String, promise: Promise) {
-    val activity = currentActivity as? FragmentActivity ?: run {
+    val activity = getReactApplicationContext().getCurrentActivity() as? FragmentActivity ?: run {
       promise.reject("ERR_ACTIVITY", "Activity is null or not a FragmentActivity"); return
     }
     cryptoEngine.decrypt(activity, encryptedBase64, prompt,
@@ -52,11 +52,11 @@ class ReactNativeAuthVaultModule(reactContext: ReactApplicationContext) :
   }
 
   private fun getSharedPreferences(): android.content.SharedPreferences {
-    return reactApplicationContext.getSharedPreferences("ReactNativeAuthVaultStorage", android.content.Context.MODE_PRIVATE)
+    return reactApplicationContext.getSharedPreferences("ReactNativeSecureXStorage", android.content.Context.MODE_PRIVATE)
   }
 
   override fun setItem(key: String, value: String, prompt: String, promise: Promise) {
-    val activity = currentActivity as? FragmentActivity ?: run {
+    val activity = getReactApplicationContext().getCurrentActivity() as? FragmentActivity ?: run {
       promise.reject("ERR_ACTIVITY", "Activity is null or not a FragmentActivity"); return
     }
     cryptoEngine.encrypt(activity, value, prompt,
@@ -69,7 +69,7 @@ class ReactNativeAuthVaultModule(reactContext: ReactApplicationContext) :
 
   override fun getItem(key: String, prompt: String, promise: Promise) {
     val encrypted = getSharedPreferences().getString(key, null) ?: run { promise.resolve(null); return }
-    val activity = currentActivity as? FragmentActivity ?: run {
+    val activity = getReactApplicationContext().getCurrentActivity() as? FragmentActivity ?: run {
       promise.reject("ERR_ACTIVITY", "Activity is null or not a FragmentActivity"); return
     }
     cryptoEngine.decrypt(activity, encrypted, prompt,
@@ -85,7 +85,7 @@ class ReactNativeAuthVaultModule(reactContext: ReactApplicationContext) :
   // MARK: - Fortress
 
   override fun setPrivacyScreenEnabled(enabled: Boolean) {
-    val activity = currentActivity ?: return
+    val activity = getReactApplicationContext().getCurrentActivity() ?: return
     activity.runOnUiThread {
       if (enabled) activity.window.addFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE)
       else activity.window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE)
@@ -93,14 +93,14 @@ class ReactNativeAuthVaultModule(reactContext: ReactApplicationContext) :
   }
 
   override fun setOverlayProtectionEnabled(enabled: Boolean) {
-    val activity = currentActivity ?: return
+    val activity = getReactApplicationContext().getCurrentActivity() ?: return
     activity.runOnUiThread {
       activity.window.decorView.rootView.filterTouchesWhenObscured = enabled
     }
   }
 
   override fun generateAttestation(nonce: String, promise: Promise) {
-    val activity = currentActivity ?: run { promise.reject("ERR_ACTIVITY", "Activity is null"); return }
+    val activity = getReactApplicationContext().getCurrentActivity() ?: run { promise.reject("ERR_ACTIVITY", "Activity is null"); return }
     val integrityManager = com.google.android.play.core.integrity.IntegrityManagerFactory.create(activity)
     val request = com.google.android.play.core.integrity.IntegrityTokenRequest.builder().setNonce(nonce).build()
     integrityManager.requestIntegrityToken(request)
@@ -190,7 +190,7 @@ class ReactNativeAuthVaultModule(reactContext: ReactApplicationContext) :
       val keyStore = KeyStore.getInstance("AndroidKeyStore")
       keyStore.load(null)
       // Delete existing keys — next encrypt/decrypt call will regenerate them
-      listOf("AuthVaultKey_Biometric", "AuthVaultKey_NonBiometric").forEach { alias ->
+      listOf("SecureXKey_Biometric", "SecureXKey_NonBiometric").forEach { alias ->
         if (keyStore.containsAlias(alias)) keyStore.deleteEntry(alias)
       }
       // Re-initialize crypto engine (triggers key regeneration in CryptoEngine.init)
@@ -217,6 +217,6 @@ class ReactNativeAuthVaultModule(reactContext: ReactApplicationContext) :
   }
 
   companion object {
-    const val NAME = NativeReactNativeAuthVaultSpec.NAME
+    const val NAME = NativeReactNativeSecureXSpec.NAME
   }
 }

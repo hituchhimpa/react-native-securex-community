@@ -1,15 +1,15 @@
-#import "ReactNativeAuthVault.h"
+#import "ReactNativeSecureX.h"
 #import <DeviceCheck/DeviceCheck.h>
 #import <CommonCrypto/CommonCrypto.h>
 #import <CommonCrypto/CommonDigest.h>
 
-#if __has_include("ReactNativeAuthVault/ReactNativeAuthVault-Swift.h")
-#import "ReactNativeAuthVault/ReactNativeAuthVault-Swift.h"
+#if __has_include("ReactNativeSecureX/ReactNativeSecureX-Swift.h")
+#import "ReactNativeSecureX/ReactNativeSecureX-Swift.h"
 #else
-#import "ReactNativeAuthVault-Swift.h"
+#import "ReactNativeSecureX-Swift.h"
 #endif
 
-@implementation ReactNativeAuthVault {
+@implementation ReactNativeSecureX {
     CryptoEngine *_cryptoEngine;
     UIVisualEffectView *_privacyView;
     BOOL _isPrivacyScreenEnabled;
@@ -169,7 +169,7 @@
 - (void)rotateEncryptionKey:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
     NSDictionary *query = @{
         (__bridge id)kSecClass: (__bridge id)kSecClassKey,
-        (__bridge id)kSecAttrApplicationTag: @"com.authvault.aes-key",
+        (__bridge id)kSecAttrApplicationTag: @"com.securex.aes-key",
     };
     OSStatus status = SecItemDelete((__bridge CFDictionaryRef)query);
     if (status == errSecSuccess || status == errSecItemNotFound) {
@@ -240,13 +240,13 @@
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
     (const facebook::react::ObjCTurboModule::InitParams &)params
 {
-    return std::make_shared<facebook::react::NativeReactNativeAuthVaultSpecJSI>(params);
+    return std::make_shared<facebook::react::NativeReactNativeSecureXSpecJSI>(params);
 }
 #endif
 
 + (NSString *)moduleName
 {
-  return @"ReactNativeAuthVault";
+  return @"ReactNativeSecureX";
 }
 
 @end

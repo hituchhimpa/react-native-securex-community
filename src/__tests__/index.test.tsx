@@ -1,8 +1,8 @@
 import { describe, it, expect, jest } from '@jest/globals';
-import { AuthVault } from '../index';
-import NativeReactNativeAuthVault from '../NativeReactNativeAuthVault';
+import { SecureX } from '../index';
+import ReactNativeSecureX from '../NativeReactNativeSecureX';
 
-jest.mock('../NativeReactNativeAuthVault', () => {
+jest.mock('../NativeReactNativeSecureX', () => {
   return {
     audit: jest.fn(() => ({ securityScore: 100, hardwareBacked: true })),
     encrypt: jest.fn((text: string) => Promise.resolve(`encrypted_${text}`)),
@@ -32,46 +32,43 @@ jest.mock('../NativeReactNativeAuthVault', () => {
   };
 });
 
-describe('AuthVault JavaScript API Unit Tests', () => {
+describe('SecureX JavaScript API Unit Tests', () => {
   it('should call audit and return posture', () => {
-    const posture = AuthVault.audit();
-    expect(NativeReactNativeAuthVault.audit).toHaveBeenCalled();
+    const posture = SecureX.audit();
+    expect(ReactNativeSecureX.audit).toHaveBeenCalled();
     expect(posture).toEqual({ securityScore: 100, hardwareBacked: true });
   });
 
   it('should encrypt and decrypt values', async () => {
-    const encrypted = await AuthVault.encrypt('secret', 'prompt');
+    const encrypted = await SecureX.encrypt('secret', 'prompt');
     expect(encrypted).toBe('encrypted_secret');
-    const decrypted = await AuthVault.decrypt(encrypted, 'prompt');
+    const decrypted = await SecureX.decrypt(encrypted, 'prompt');
     expect(decrypted).toBe('secret');
   });
 
   it('should handle item storage methods', async () => {
-    await expect(AuthVault.setItem('key', 'val', '')).resolves.toBe(true);
-    await expect(AuthVault.getItem('key', '')).resolves.toBe('stored_value');
-    await expect(AuthVault.removeItem('key')).resolves.toBe(true);
+    await expect(SecureX.setItem('key', 'val', '')).resolves.toBe(true);
+    await expect(SecureX.getItem('key', '')).resolves.toBe('stored_value');
+    await expect(SecureX.removeItem('key')).resolves.toBe(true);
   });
 
   it('should delegate secure native in-memory operations', () => {
-    AuthVault.secureStore('key', 'val');
-    expect(NativeReactNativeAuthVault.secureStore).toHaveBeenCalledWith(
-      'key',
-      'val'
-    );
-    expect(AuthVault.secureRead('key')).toBe('secure_val');
-    AuthVault.secureWipe();
-    expect(NativeReactNativeAuthVault.secureWipe).toHaveBeenCalled();
+    SecureX.secureStore('key', 'val');
+    expect(ReactNativeSecureX.secureStore).toHaveBeenCalledWith('key', 'val');
+    expect(SecureX.secureRead('key')).toBe('secure_val');
+    SecureX.secureWipe();
+    expect(ReactNativeSecureX.secureWipe).toHaveBeenCalled();
   });
 
   it('should report vault usability', () => {
-    expect(AuthVault.hasSecureLockScreen()).toBe(true);
-    expect(NativeReactNativeAuthVault.hasSecureLockScreen).toHaveBeenCalled();
+    expect(SecureX.hasSecureLockScreen()).toBe(true);
+    expect(ReactNativeSecureX.hasSecureLockScreen).toHaveBeenCalled();
   });
 
   it('should delegate cryptographic signing operations', async () => {
-    const pubKey = await AuthVault.generateSigningKeyPair('tag1');
+    const pubKey = await SecureX.generateSigningKeyPair('tag1');
     expect(pubKey).toBe('mock_pub_key');
-    const sig = await AuthVault.signData('tag1', 'payload');
+    const sig = await SecureX.signData('tag1', 'payload');
     expect(sig).toBe('mock_sig');
   });
 });

@@ -1,4 +1,4 @@
-package com.hituchhimpa.reactnativeauthvault
+package com.hituchhimpa.reactnativesecurex
 
 import java.util.concurrent.ConcurrentHashMap
 

@@ -1,5 +1,5 @@
 buildscript {
-  ext.ReactNativeAuthVault = [
+  ext.ReactNativeSecureX = [
     kotlinVersion: "2.0.21",
     minSdkVersion: 24,
     compileSdkVersion: 36,
@@ -11,7 +11,7 @@ buildscript {
       return rootProject.ext.get(prop)
     }
 
-    return ReactNativeAuthVault[prop]
+    return ReactNativeSecureX[prop]
   }
 
   repositories {
@@ -33,7 +33,7 @@ apply plugin: "kotlin-android"
 apply plugin: "com.facebook.react"
 
 android {
-  namespace "com.hituchhimpa.reactnativeauthvault"
+  namespace "com.hituchhimpa.reactnativesecurex"
 
   compileSdkVersion getExtOrDefault("compileSdkVersion")
 

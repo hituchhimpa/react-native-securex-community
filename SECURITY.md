@@ -1,6 +1,6 @@
 # 🛡️ Security Policy & Threat Defense Architecture
 
-`@hituchhimpa/react-native-auth-vault` is engineered for zero-trust environments, financial institutions, and security-critical applications. Security and software supply chain integrity are our foundational priorities.
+`@hituchhimpa/react-native-securex` is engineered for zero-trust environments, financial institutions, and security-critical applications. Security and software supply chain integrity are our foundational priorities.
 
 ---
 
@@ -14,7 +14,7 @@ To guarantee that no malicious code or supply-chain malware can compromise appli
 - **Automated Dependency Auditing**: CI pipelines continuously scan sub-dependencies for known vulnerabilities (`CVEs`) and malicious lockfile alterations.
 
 ### 2. Native Memory & Isolation (Zero-Fill Protection)
-- **Heap Leakage Mitigation**: Sensitive credentials stored via `AuthVault.secureStore` bypass the JavaScript heap.
+- **Heap Leakage Mitigation**: Sensitive credentials stored via `SecureX.secureStore` bypass the JavaScript heap.
 - **Page Locking (`mlock`)**: On iOS, secure memory pages are locked into RAM to prevent memory swapping to persistent storage disks.
 - **Buffer Sanitization**: On Android, sensitive memory buffers are explicitly zero-filled (`\u0000`) upon session wipe to prevent cold-boot and memory-dump inspection.
 
@@ -42,7 +42,7 @@ The library includes built-in real-time threat detection to shield host applicat
 
 ## ✉️ Vulnerability Reporting & Disclosure
 
-We take all security reports seriously. If you suspect a security vulnerability or security bug in `@hituchhimpa/react-native-auth-vault`, please follow our coordinated disclosure policy:
+We take all security reports seriously. If you suspect a security vulnerability or security bug in `@hituchhimpa/react-native-securex`, please follow our coordinated disclosure policy:
 
 ### How to Report
 1. **Private Disclosure**: Do **NOT** create a public GitHub issue for undisclosed vulnerabilities.
@@ -61,7 +61,8 @@ We take all security reports seriously. If you suspect a security vulnerability 
 
 ## 📜 Compliance & Verification
 
-`@hituchhimpa/react-native-auth-vault` is designed to assist mobile applications in satisfying regulatory and security benchmarks, including:
+`@hituchhimpa/react-native-securex` is designed to assist mobile applications in satisfying regulatory and security benchmarks, including:
 - **OWASP MASVS** (Mobile Application Security Verification Standard - Storage & Cryptography)
 - **PCI-DSS Mobile Payment Acceptance** Guidelines
 - **GDPR / HIPAA** Storage Integrity Standards
+

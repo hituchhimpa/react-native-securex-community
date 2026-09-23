@@ -1,7 +1,7 @@
 import { NativeEventEmitter } from 'react-native';
-import ReactNativeAuthVault from './NativeReactNativeAuthVault';
+import ReactNativeSecureX from './NativeReactNativeSecureX';
 
-const emitter = new NativeEventEmitter(ReactNativeAuthVault as any);
+const emitter = new NativeEventEmitter(ReactNativeSecureX as any);
 
 export type SecurityEventType =
   | 'SESSION_EXPIRED'
@@ -15,64 +15,63 @@ export interface SecurityEvent {
   timestamp: number;
 }
 
-export const AuthVault = {
+export const SecureX = {
   // --- Core Vault ---
-  audit: (): Object => ReactNativeAuthVault.audit(),
+  audit: (): Object => ReactNativeSecureX.audit(),
   encrypt: (plainText: string, prompt: string): Promise<string> =>
-    ReactNativeAuthVault.encrypt(plainText, prompt),
+    ReactNativeSecureX.encrypt(plainText, prompt),
   decrypt: (encryptedBase64: string, prompt: string): Promise<string> =>
-    ReactNativeAuthVault.decrypt(encryptedBase64, prompt),
+    ReactNativeSecureX.decrypt(encryptedBase64, prompt),
   setItem: (key: string, value: string, prompt: string): Promise<boolean> =>
-    ReactNativeAuthVault.setItem(key, value, prompt),
+    ReactNativeSecureX.setItem(key, value, prompt),
   getItem: (key: string, prompt: string): Promise<string | null> =>
-    ReactNativeAuthVault.getItem(key, prompt),
+    ReactNativeSecureX.getItem(key, prompt),
   removeItem: (key: string): Promise<boolean> =>
-    ReactNativeAuthVault.removeItem(key),
+    ReactNativeSecureX.removeItem(key),
 
   // --- Fortress ---
   setPrivacyScreenEnabled: (enabled: boolean): void =>
-    ReactNativeAuthVault.setPrivacyScreenEnabled(enabled),
+    ReactNativeSecureX.setPrivacyScreenEnabled(enabled),
   setOverlayProtectionEnabled: (enabled: boolean): void =>
-    ReactNativeAuthVault.setOverlayProtectionEnabled(enabled),
+    ReactNativeSecureX.setOverlayProtectionEnabled(enabled),
   generateAttestation: (nonce: string): Promise<string> =>
-    ReactNativeAuthVault.generateAttestation(nonce),
+    ReactNativeSecureX.generateAttestation(nonce),
 
   // --- Biometric Enrollment Change Detection ---
   isBiometricEnrollmentChanged: (): boolean =>
-    ReactNativeAuthVault.isBiometricEnrollmentChanged(),
+    ReactNativeSecureX.isBiometricEnrollmentChanged(),
 
   // --- Vault Usability ---
   // Returns false when the device has no secure lock screen / passcode set — in that
   // state, auth-gated keys can't be created, so encrypt/decrypt/setItem/getItem calls
   // made with a non-empty `prompt` will always fail. Check this before using them.
-  hasSecureLockScreen: (): boolean =>
-    ReactNativeAuthVault.hasSecureLockScreen(),
+  hasSecureLockScreen: (): boolean => ReactNativeSecureX.hasSecureLockScreen(),
 
   // --- Session Key Expiry ---
   setSessionTimeout: (seconds: number): void =>
-    ReactNativeAuthVault.setSessionTimeout(seconds),
-  isSessionExpired: (): boolean => ReactNativeAuthVault.isSessionExpired(),
-  wipeSession: (): void => ReactNativeAuthVault.wipeSession(),
+    ReactNativeSecureX.setSessionTimeout(seconds),
+  isSessionExpired: (): boolean => ReactNativeSecureX.isSessionExpired(),
+  wipeSession: (): void => ReactNativeSecureX.wipeSession(),
 
   // --- ECC Hardware Key Pairs + Signing ---
   generateSigningKeyPair: (tag: string): Promise<string> =>
-    ReactNativeAuthVault.generateSigningKeyPair(tag),
+    ReactNativeSecureX.generateSigningKeyPair(tag),
   signData: (tag: string, data: string): Promise<string> =>
-    ReactNativeAuthVault.signData(tag, data),
+    ReactNativeSecureX.signData(tag, data),
 
   // --- Secure In-Memory Storage ---
   secureStore: (key: string, value: string): void =>
-    ReactNativeAuthVault.secureStore(key, value),
+    ReactNativeSecureX.secureStore(key, value),
   secureRead: (key: string): string | null =>
-    ReactNativeAuthVault.secureRead(key),
-  secureWipe: (): void => ReactNativeAuthVault.secureWipe(),
+    ReactNativeSecureX.secureRead(key),
+  secureWipe: (): void => ReactNativeSecureX.secureWipe(),
 
   // --- Runtime App Tamper Detection ---
-  isAppTampered: (): boolean => ReactNativeAuthVault.isAppTampered(),
+  isAppTampered: (): boolean => ReactNativeSecureX.isAppTampered(),
 
   // --- Key Rotation ---
   rotateEncryptionKey: (): Promise<boolean> =>
-    ReactNativeAuthVault.rotateEncryptionKey(),
+    ReactNativeSecureX.rotateEncryptionKey(),
 
   // --- Security Events ---
   onSecurityEvent: (callback: (event: SecurityEvent) => void) => {
@@ -82,3 +81,8 @@ export const AuthVault = {
     );
   },
 };
+
+/**
+ * @deprecated Use `SecureX` instead.
+ */
+export const AuthVault = SecureX;

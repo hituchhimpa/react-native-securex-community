@@ -1,8 +1,8 @@
 import { AndroidConfig } from '@expo/config-plugins';
 import type { ConfigPlugin } from '@expo/config-plugins';
-import type { AuthVaultPluginProps } from './index';
+import type { SecureXPluginProps } from './index';
 
-export const withAuthVaultAndroid: ConfigPlugin<AuthVaultPluginProps> = (
+export const withSecureXAndroid: ConfigPlugin<SecureXPluginProps> = (
   config
 ) => {
   return AndroidConfig.Permissions.withPermissions(config, [
@@ -10,3 +10,5 @@ export const withAuthVaultAndroid: ConfigPlugin<AuthVaultPluginProps> = (
     'android.permission.USE_FINGERPRINT',
   ]);
 };
+
+export const withAuthVaultAndroid = withSecureXAndroid;

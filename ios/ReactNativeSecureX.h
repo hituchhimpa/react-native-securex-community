@@ -12,17 +12,17 @@
 #import <React-RCTBridge/RCTEventEmitter.h>
 #endif
 
-#if __has_include(<ReactNativeAuthVaultSpec/ReactNativeAuthVaultSpec.h>)
-#import <ReactNativeAuthVaultSpec/ReactNativeAuthVaultSpec.h>
-#elif __has_include("ReactNativeAuthVaultSpec.h")
-#import "ReactNativeAuthVaultSpec.h"
+#if __has_include(<ReactNativeSecureXSpec/ReactNativeSecureXSpec.h>)
+#import <ReactNativeSecureXSpec/ReactNativeSecureXSpec.h>
+#elif __has_include("ReactNativeSecureXSpec.h")
+#import "ReactNativeSecureXSpec.h"
 #endif
 
-#ifndef NativeReactNativeAuthVaultSpec_h
-@protocol NativeReactNativeAuthVaultSpec <RCTBridgeModule>
+#ifndef NativeReactNativeSecureXSpec_h
+@protocol NativeReactNativeSecureXSpec <RCTBridgeModule>
 @end
 #endif
 
-@interface ReactNativeAuthVault : RCTEventEmitter <NativeReactNativeAuthVaultSpec>
+@interface ReactNativeSecureX : RCTEventEmitter <NativeReactNativeSecureXSpec>
 
 @end

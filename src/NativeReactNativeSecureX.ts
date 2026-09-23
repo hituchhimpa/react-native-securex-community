@@ -48,4 +48,4 @@ export interface Spec extends TurboModule {
   removeListeners(count: Double): void;
 }
 
-export default TurboModuleRegistry.getEnforcing<Spec>('ReactNativeAuthVault');
+export default TurboModuleRegistry.getEnforcing<Spec>('ReactNativeSecureX');

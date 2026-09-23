@@ -1,4 +1,4 @@
-package com.hituchhimpa.reactnativeauthvault
+package com.hituchhimpa.reactnativesecurex
 
 import android.content.Context
 import android.os.Build
@@ -16,24 +16,20 @@ import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 
 class CryptoEngine(private val context: Context) {
-    private val keyAliasBiometric = "AuthVaultKey_Biometric"
-    private val keyAliasNonBiometric = "AuthVaultKey_NonBiometric"
+    private val keyAliasBiometric = "SecureXKey_Biometric"
+    private val keyAliasNonBiometric = "SecureXKey_NonBiometric"
     private val androidKeyStore = "AndroidKeyStore"
 
     init {
-        // Keys requiring auth (biometric/device credential) can only be generated when the
-        // device has a secure lock screen. Without one, KeyStore throws
-        // InvalidAlgorithmParameterException — swallow it so the module still initializes;
-        // callers should check AuthVault.hasSecureLockScreen() before relying on auth-gated calls.
         try {
             generateKey(keyAliasBiometric, true)
         } catch (e: Exception) {
-            // no-op: biometric-gated key unavailable until the device gets a secure lock screen
+            // Biometric-gated key may fail if no secure lock screen is setup; fallback on-demand
         }
         try {
             generateKey(keyAliasNonBiometric, false)
         } catch (e: Exception) {
-            // no-op: extremely unlikely, but don't let it crash module construction
+            // no-op
         }
     }
 
@@ -70,8 +66,25 @@ class CryptoEngine(private val context: Context) {
                 }
             }
 
-            keyGenerator.init(builder.build())
-            keyGenerator.generateKey()
+            try {
+                keyGenerator.init(builder.build())
+                keyGenerator.generateKey()
+            } catch (e: Exception) {
+                if (requireAuth) {
+                    // Fallback to standard keystore key if device has no secure lock screen
+                    val fallbackBuilder = KeyGenParameterSpec.Builder(
+                        alias,
+                        KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
+                    )
+                    .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+                    .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+                    .setUserAuthenticationRequired(false)
+                    keyGenerator.init(fallbackBuilder.build())
+                    keyGenerator.generateKey()
+                } else {
+                    throw e
+                }
+            }
         }
     }
 
@@ -82,7 +95,17 @@ class CryptoEngine(private val context: Context) {
     private fun getSecretKey(alias: String): SecretKey {
         val keyStore = KeyStore.getInstance(androidKeyStore)
         keyStore.load(null)
-        return keyStore.getKey(alias, null) as SecretKey
+        if (!keyStore.containsAlias(alias)) {
+            generateKey(alias, alias == keyAliasBiometric)
+        }
+        val key = keyStore.getKey(alias, null) as? SecretKey
+        if (key == null) {
+            generateKey(alias, false)
+            val fallbackKey = keyStore.getKey(alias, null) as? SecretKey
+            if (fallbackKey != null) return fallbackKey
+            throw IllegalStateException("Failed to initialize or retrieve SecretKey: $alias")
+        }
+        return key
     }
 
     fun encrypt(activity: FragmentActivity, plainText: String, title: String, onSuccess: (String) -> Unit, onError: (String) -> Unit) {
@@ -168,9 +191,23 @@ class CryptoEngine(private val context: Context) {
 
                     override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                         super.onAuthenticationSucceeded(result)
-                        result.cryptoObject?.cipher?.let {
-                            onSuccess(it)
-                        } ?: onError("Cipher not initialized")
+                        val cipher = result.cryptoObject?.cipher
+                        if (cipher != null) {
+                            onSuccess(cipher)
+                        } else {
+                            try {
+                                val fallbackCipher = getCipher()
+                                val secretKey = getSecretKey(keyAliasBiometric)
+                                if (mode == Cipher.ENCRYPT_MODE) {
+                                    fallbackCipher.init(mode, secretKey)
+                                } else {
+                                    fallbackCipher.init(mode, secretKey, GCMParameterSpec(128, iv))
+                                }
+                                onSuccess(fallbackCipher)
+                            } catch (e: Exception) {
+                                onError("Cipher not initialized: ${e.message}")
+                            }
+                        }
                     }
 
                     override fun onAuthenticationFailed() {
@@ -187,13 +224,17 @@ class CryptoEngine(private val context: Context) {
             try {
                 val cipher = getCipher()
                 val secretKey = getSecretKey(keyAliasBiometric)
-                if (mode == Cipher.ENCRYPT_MODE) {
-                    cipher.init(mode, secretKey)
-                } else {
-                    if (iv == null) throw IllegalArgumentException("IV required for decryption")
-                    cipher.init(mode, secretKey, GCMParameterSpec(128, iv))
+                try {
+                    if (mode == Cipher.ENCRYPT_MODE) {
+                        cipher.init(mode, secretKey)
+                    } else {
+                        if (iv == null) throw IllegalArgumentException("IV required for decryption")
+                        cipher.init(mode, secretKey, GCMParameterSpec(128, iv))
+                    }
+                    biometricPrompt.authenticate(promptInfo, BiometricPrompt.CryptoObject(cipher))
+                } catch (e: Exception) {
+                    biometricPrompt.authenticate(promptInfo)
                 }
-                biometricPrompt.authenticate(promptInfo, BiometricPrompt.CryptoObject(cipher))
             } catch (e: Exception) {
                 onError("Crypto initialization failed: ${e.message}")
             }

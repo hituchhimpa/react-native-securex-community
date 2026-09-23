@@ -2,7 +2,7 @@
   "compilerOptions": {
     "rootDir": ".",
     "paths": {
-      "@hituchhimpa/react-native-auth-vault": ["./src/index"]
+      "@hituchhimpa/react-native-securex": ["./src/index"]
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,

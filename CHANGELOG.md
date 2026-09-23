@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.2.0] - 2026-09-22
+
+### Changed — Rebrand to `react-native-securex`
+- **Package Name**: Renamed to `@hituchhimpa/react-native-securex`.
+- **Primary JS Export**: Renamed `AuthVault` to `SecureX` (with `AuthVault` preserved as a backwards-compatible deprecated alias).
+- **TurboModule Spec**: Renamed `NativeReactNativeAuthVault` to `NativeReactNativeSecureX`.
+- **Android**: Package namespace updated to `com.hituchhimpa.reactnativesecurex` with `ReactNativeSecureXModule` and `ReactNativeSecureXPackage`.
+- **iOS**: CocoaPods podspec renamed to `ReactNativeSecureX.podspec`, module classes updated to `ReactNativeSecureX`.
+- **Expo Config Plugin**: Exported `withSecureX` and `withSecureXAndroid` / `withSecureXIOS`.
+
+---
+
 ## [1.1.2] - 2026-06-29
 
 ### Fixed

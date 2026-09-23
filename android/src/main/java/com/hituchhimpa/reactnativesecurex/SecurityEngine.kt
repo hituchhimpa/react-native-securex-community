@@ -1,4 +1,4 @@
-package com.hituchhimpa.reactnativeauthvault
+package com.hituchhimpa.reactnativesecurex
 
 import android.content.Context
 import android.content.pm.PackageManager
@@ -10,8 +10,8 @@ import java.security.MessageDigest
 
 object SecurityEngine {
 
-    private const val PREFS_NAME = "av_security_prefs"
-    private const val KEY_BIOMETRIC_HASH = "av_biometric_hash"
+    private const val PREFS_NAME = "sx_security_prefs"
+    private const val KEY_BIOMETRIC_HASH = "sx_biometric_hash"
 
     fun audit(context: Context): Map<String, Any> {
         val rooted = isRooted()

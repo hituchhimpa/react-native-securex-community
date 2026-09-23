@@ -1,4 +1,4 @@
-package com.hituchhimpa.reactnativeauthvault
+package com.hituchhimpa.reactnativesecurex
 
 import android.os.Build
 import android.security.keystore.KeyGenParameterSpec

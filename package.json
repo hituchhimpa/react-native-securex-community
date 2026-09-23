@@ -1,6 +1,6 @@
 {
-  "name": "@hituchhimpa/react-native-auth-vault",
-  "version": "1.1.7",
+  "name": "@hituchhimpa/react-native-securex",
+  "version": "1.2.0",
   "description": "Native-first React Native security and authentication library",
   "main": "./lib/module/index.js",
   "expo": "./app.plugin.js",
@@ -34,7 +34,7 @@
     "!**/.*"
   ],
   "scripts": {
-    "example": "yarn workspace @hituchhimpa/react-native-auth-vault-example",
+    "example": "yarn workspace @hituchhimpa/react-native-securex-example",
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
     "prepare": "bob build && yarn build:plugin",
     "build:plugin": "tsc --project plugin/tsconfig.json",
@@ -130,11 +130,11 @@
     ]
   },
   "codegenConfig": {
-    "name": "ReactNativeAuthVaultSpec",
+    "name": "ReactNativeSecureXSpec",
     "type": "modules",
     "jsSrcsDir": "src",
     "android": {
-      "javaPackageName": "com.hituchhimpa.reactnativeauthvault"
+      "javaPackageName": "com.hituchhimpa.reactnativesecurex"
     }
   },
   "prettier": {
