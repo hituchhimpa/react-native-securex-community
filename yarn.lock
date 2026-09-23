@@ -1754,6 +1754,7 @@ __metadata:
     "@babel/core": "npm:^7.25.2"
     "@babel/preset-env": "npm:^7.25.3"
     "@babel/runtime": "npm:^7.25.0"
+    "@hituchhimpa/react-native-securex": "npm:*"
     "@react-native-community/cli": "npm:20.1.0"
     "@react-native-community/cli-platform-android": "npm:20.1.0"
     "@react-native-community/cli-platform-ios": "npm:20.1.0"
@@ -1769,7 +1770,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hituchhimpa/react-native-securex@workspace:.":
+"@hituchhimpa/react-native-securex@npm:*, @hituchhimpa/react-native-securex@workspace:.":
   version: 0.0.0-use.local
   resolution: "@hituchhimpa/react-native-securex@workspace:."
   dependencies:

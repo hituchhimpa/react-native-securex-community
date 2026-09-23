@@ -68,9 +68,24 @@ export interface CreateSignatureResult {
   error?: string;
 }
 
+export interface AuditResult {
+  secureStorage: boolean;
+  hardwareBacked: boolean;
+  biometricEnabled: boolean;
+  hasSecureLockScreen: boolean;
+  rooted: boolean;
+  jailbroken: boolean;
+  emulator: boolean;
+  debuggerAttached: boolean;
+  hookingDetected: boolean;
+  appTampered: boolean;
+  biometricEnrollmentChanged: boolean;
+  securityScore: number;
+}
+
 export const SecureX = {
   // --- Core Vault ---
-  audit: (): Object => ReactNativeSecureX.audit(),
+  audit: (): AuditResult => ReactNativeSecureX.audit() as AuditResult,
   encrypt: (plainText: string, prompt: string): Promise<string> =>
     ReactNativeSecureX.encrypt(plainText, prompt),
   decrypt: (encryptedBase64: string, prompt: string): Promise<string> =>

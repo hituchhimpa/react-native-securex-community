@@ -1,97 +1,54 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# 🛡️ SecureX Example & Showcase App
 
-# Getting Started
+Interactive showcase and testbench application for **`@hituchhimpa/react-native-securex`**.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+Experience native-first biometric authentication, hardware security posture audits, zero-heap encrypted storage, and asymmetric cryptographic signing running directly on iOS and Android.
 
-## Step 1: Start Metro
+---
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## 📱 Features Demonstrated in This App
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+- **🛡️ Device Security Posture Audit**: Live assessment of jailbreak/root status, Frida/Xposed hooking vectors, debuggers, emulators, and security score.
+- **🧬 Granular Biometric Sensor Detection**: Identifies whether the device has Face ID, Touch ID / Fingerprint, or Iris scanner hardware, and checks active enrollment.
+- **👤 Biometric Login (`simplePrompt`)**: Instant one-tap biometric prompt backed by Secure Enclave / Android KeyStore.
+- **🔑 Asymmetric Hardware Keys (`createKeys`)**: Generates hardware-isolated ECDSA P-256 key pairs.
+- **✍️ Biometric Cryptographic Signatures (`createSignature`)**: Signs arbitrary payload transactions gated by Face ID or Fingerprint.
+- **💾 Encrypted Vault Storage (`setItem` / `getItem` / `removeItem`)**: Hardware-backed AES-256 storage with optional biometric auth-gating.
+- **💻 Live System Terminal Console**: Real-time inspectable stream of events, security audits, and key operations with timestamps.
 
+---
+
+## 🚀 Running the Example App
+
+### 1. Install Dependencies
+
+From the repository root:
 ```sh
-# Using npm
-npm start
-
-# OR using Yarn
-yarn start
+yarn install
+yarn prepare
 ```
 
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
+### 2. Run on iOS
 
 ```sh
-# Using npm
-npm run android
-
-# OR using Yarn
-yarn android
+cd example/ios && pod install && cd ../..
+yarn example ios
 ```
 
-### iOS
+> **Note**: For Face ID on iOS Simulator, test by enabling **Features > Face ID > Enrolled** and **Features > Face ID > Matching Face** in the Simulator menu bar.
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+### 3. Run on Android
 
 ```sh
-bundle install
+yarn example android
 ```
 
-Then, and every time you update your native dependencies, run:
+> **Note**: For Biometrics on Android Emulator, configure a fingerprint or PIN in Android Settings -> Security -> Fingerprint, or use `adb emu finger touch 1`.
 
-```sh
-bundle exec pod install
-```
+---
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+## 🛠️ Tech Stack & Architecture
 
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+- **React Native 0.85+**
+- **New Architecture (TurboModules & JSI)**
+- **TypeScript 5+** with live workspace linking to library sources

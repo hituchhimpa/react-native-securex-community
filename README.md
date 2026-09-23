@@ -1,383 +1,343 @@
 # 🛡️ react-native-securex
 
-[![npm version](https://img.shields.io/npm/v/@hituchhimpa/react-native-securex.svg?style=flat-square&color=blue)](https://www.npmjs.com/package/@hituchhimpa/react-native-securex)
-[![npm downloads](https://img.shields.io/npm/dm/@hituchhimpa/react-native-securex.svg?style=flat-square&color=green)](https://www.npmjs.com/package/@hituchhimpa/react-native-securex)
-[![Security Score](https://img.shields.io/badge/Security--Score-100%2F100-success?style=flat-square)](https://github.com/HituChhimpa7/react-native-auth-vault-community/blob/main/SECURITY.md)
-[![Malware Shield](https://img.shields.io/badge/Malware--Shield-Protected-brightgreen?style=flat-square)](https://github.com/HituChhimpa7/react-native-auth-vault-community/blob/main/SECURITY.md)
-[![Security Audit](https://img.shields.io/badge/Security--Audit-Passed-brightgreen?style=flat-square)](https://github.com/HituChhimpa7/react-native-auth-vault-community/blob/main/SECURITY.md)
-[![license](https://img.shields.io/github/license/HituChhimpa7/react-native-auth-vault-community?style=flat-square)](LICENSE)
-[![Platform](https://img.shields.io/badge/platform-iOS%20%7C%20Android-lightgrey?style=flat-square)](https://reactnative.dev)
-[![New Architecture](https://img.shields.io/badge/New%20Architecture-✅-brightgreen?style=flat-square)](https://reactnative.dev/docs/the-new-architecture/landing-page)
-[![Expo](https://img.shields.io/badge/Expo-✅-purple?style=flat-square)](https://expo.dev)
-
-> **The zero-trust React Native security & authentication toolkit built for enterprise mobile applications.**
-
-Replace 5+ separate security packages with a single, production-hardened SDK built on Apple Secure Enclave, Android StrongBox, and hardware security modules. 
-
-`react-native-securex` provides bank-grade biometric encryption, secure native in-memory storage (never exposed to the JavaScript heap), runtime threat and malware detection (debugger, Frida/Xposed hooking, app tampering, emulator, jailbreak/root), device attestation, and hardware-backed asymmetric ECDSA request signing.
+<p align="center">
+  <img src="./assets/securex_banner.png" width="100%" alt="SecureX React Native Security SDK" style="border-radius: 12px;" />
+</p>
 
 <p align="center">
-  <img src="./assets/auth_vault_mockup.png" width="450" alt="react-native-securex mockup" />
+  <a href="https://www.npmjs.com/package/@hituchhimpa/react-native-securex"><img src="https://img.shields.io/npm/v/@hituchhimpa/react-native-securex.svg?style=for-the-badge&color=00E5FF&labelColor=0B0F19" alt="npm version" /></a>
+  <a href="https://www.npmjs.com/package/@hituchhimpa/react-native-securex"><img src="https://img.shields.io/npm/dm/@hituchhimpa/react-native-securex.svg?style=for-the-badge&color=10B981&labelColor=0B0F19" alt="npm downloads" /></a>
+  <a href="https://reactnative.dev/docs/the-new-architecture/landing-page"><img src="https://img.shields.io/badge/TurboModules-JSI%20Native-7928CA?style=for-the-badge&labelColor=0B0F19" alt="TurboModule" /></a>
+  <a href="https://expo.dev"><img src="https://img.shields.io/badge/Expo-Config%20Plugin-4630EB?style=for-the-badge&labelColor=0B0F19" alt="Expo" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-F59E0B?style=for-the-badge&labelColor=0B0F19" alt="License" /></a>
+</p>
+
+<h3 align="center">
+  The Zero-Trust Security, Biometrics & Cryptographic Vault for React Native & Expo.
+</h3>
+
+<p align="center">
+  <strong>Replace 5+ fragmented, unmaintained security libraries with a single, high-performance native SDK.</strong>
+  <br />
+  Hardware-backed by Apple Secure Enclave & Android StrongBox. Zero JavaScript heap exposure. No complex Redux-Persist boilerplate required.
 </p>
 
 ---
 
-## 🛡️ Anti-Malware & Supply Chain Security Shield
+## ⚡ Why Developers Are Switching to SecureX
 
-> [!IMPORTANT]
-> **Zero-Trust Supply Chain Verification**: This package enforces strict anti-malware and supply chain security controls. For full architecture details, refer to [SECURITY.md](https://github.com/HituChhimpa7/react-native-auth-vault-community/blob/main/SECURITY.md).
+For years, securing a React Native app required assembling a brittle patchwork of 5+ separate dependencies:
+`react-native-keychain` + `react-native-biometrics` + `jail-monkey` + `react-native-privacy-snapshot` + `redux-persist` + custom crypto code.
 
-- **No Dangerous Lifecycle Scripts**: Clean package exports with zero `preinstall` or `postinstall` script execution vectors.
-- **Hardware Cryptographic Isolation**: Private keys and master secrets are bound to hardware chips (Secure Enclave / StrongBox) and never enter JavaScript heap memory.
-- **Dynamic Hooking Block**: Scans active process memory maps (`/proc/self/maps`, dyld framework images) to detect and neutralize Frida gadgets or malicious Xposed hooking engines.
-- **Tapjacking Defense**: Drops unauthorized touch events on Android whenever dynamic overlay malware attempts to hijack user authentication prompts.
+### 🚫 The Legacy Approach:
+- ❌ **Fragile Redux-Persist Auth Boilerplate**: Developers often set up Redux + `redux-persist` + `@react-native-async-storage/async-storage` + sensitive-storage plugins just to persist tokens across app reloads. This adds 60+ lines of config, rehydration lag, and leaves tokens exposed in plaintext on disk.
+- ❌ **Memory Leaks in JS Heap**: Passing tokens as standard JavaScript strings leaves them vulnerable to heap-dump memory forensics.
+- ❌ **No Modern Anti-Hooking**: Basic root checkers are bypassed in seconds by modern Frida scripts and Magisk Zygisk modules.
+- ❌ **No Cryptographic Request Signing**: Legacy libraries store passwords, but can't generate hardware-backed asymmetric ECDSA signatures to authenticate API requests or approve transactions.
+- ❌ **Bridge Overhead**: Slow asynchronous bridge serialization that stutters on React Native's New Architecture.
 
----
-
-## ✨ Native Architecture & Defense Features
-
-### ⚡ Architecture Compatibility (TurboModules & JSI)
-`react-native-securex` is built on React Native's official **TurboModule Architecture (New Architecture / Codegen)** with direct JSI and Swift / Kotlin bindings for 100% zero-bridge native performance across React Native CLI and Expo apps.
-- **TurboModules (Official New Architecture)**: ✅ **Supported natively out-of-the-box** with automatic C++/Swift/Kotlin dynamic bindings.
-- **Nitro Modules**: ℹ️ Currently, core security operations run on official JSI TurboModules for maximum cross-platform stability and zero extra dependency overhead. Full Nitro Modules bindings are planned for a future release for ultra-low latency synchronous C++ cross-thread calls.
-
-### 🔐 Hardware-Protected Vault & Encryption
-AES-256 encryption backed by hardware-isolated cryptoprocessors.
-- **iOS:** Keychain Services integration utilizing Access Control flags to gate keys with Face ID / Touch ID or Device Passcode.
-- **Android:** AES-256 key generation inside `AndroidKeyStore` with dedicated **StrongBox** hardware support where available.
-
-### 🕵️ Dynamic Threat & Malware Detection
-Provides multi-layered system and runtime validation:
-- **Jailbreak / Root Detection:** Scans for forbidden directories, writable files, system bin files (`su`, `busybox`), and mock location providers.
-- **Frida / Xposed Injection:**
-  - **iOS:** Inspects dyld images in memory for injected frameworks (`FridaGadget`, `cynject`, `libcycript`, `MobileSubstrate`).
-  - **Android:** Parses `/proc/self/maps` at runtime to detect memory mappings of malicious binaries.
-- **App Tamper Verification:**
-  - **iOS:** Runs `SecStaticCodeCheckValidity` to verify code signature matches development keys.
-  - **Android:** Extracts and compares the APK signing certificate hash against the expected original certificate.
-- **Debugger Detection:** Monitors `sysctl` `P_TRACED` flag on iOS and `Debug.isDebuggerConnected()` on Android.
-
-### 🧠 Secure In-Memory Storage (Zero Heap Exposure)
-Variables stored in JavaScript heap can be easily dumped from memory or read by attackers. `securex` provides native-level in-memory storage:
-- **iOS:** Key-value pairs stored in memory pages locked using `mlock` to prevent them from writing to swap space.
-- **Android:** Uses native `CharArray` buffers which can be manually zero-filled (`\u0000`) before garbage collection, rather than immutable Java strings.
-
-### 📱 Privacy Screen & Tapjacking Defense
-- **Privacy Screen:**
-  - **iOS:** Automatically overlays a system `UIVisualEffectView` blur on application resignation (`UIApplicationWillResignActiveNotification`).
-  - **Android:** Sets `FLAG_SECURE` on the window to natively block screenshots, video recordings, and app-switcher snapshots.
-- **Tapjacking Protection:** Activates Android `filterTouchesWhenObscured` to drop touches whenever an overlay or overlay-based malware is running on top of your app.
+### 🛡️ The SecureX Solution:
+- ✅ **Native Session Persistence (No Redux-Persist Needed)**: Persist session tokens and user state directly in hardware-isolated cryptoprocessors with automatic session timeout (`setSessionTimeout`), biometric unlock, and instant memory wipe (`wipeSession`) without requiring Redux or AsyncStorage!
+- ✅ **Single Native SDK**: Biometrics + Enclave Storage + Threat Detection + Memory Zeroing + Cryptographic Signing in one unified API.
+- ✅ **TurboModules & Direct JSI**: Native Swift & Kotlin execution with zero bridge serialization overhead.
+- ✅ **Zero-Heap Memory Lock**: Native `mlock` memory pages (iOS) and zero-cleared byte arrays (Android) that never touch the JavaScript garbage collector.
+- ✅ **Runtime Threat Shield**: Detects Frida/Xposed dynamic memory hooking, debuggers, APK tampering, and jailbreak/root environments in real-time.
+- ✅ **Expo Out-of-the-Box**: Includes an official Expo Config Plugin for seamless EAS Prebuild workflows.
 
 ---
 
-## 📦 Installation
+## 🚀 30-Second Quick Start
+
+### 1. Installation
 
 ```sh
+# npm
 npm install @hituchhimpa/react-native-securex
-# or
+
+# yarn
 yarn add @hituchhimpa/react-native-securex
+
+# bun
+bun add @hituchhimpa/react-native-securex
 ```
 
-### iOS Installation & Permissions
-
-#### 1. CocoaPods Linking
+#### iOS Setup
 ```sh
 cd ios && pod install
 ```
-
-#### 2. Info.plist Permissions
-For Face ID support, you **must** add the `NSFaceIDUsageDescription` key to your application's `ios/YourAppName/Info.plist`:
-
+Add Face ID permission description to your `ios/YourApp/Info.plist`:
 ```xml
 <key>NSFaceIDUsageDescription</key>
-<string>Allow $(PRODUCT_NAME) to use Face ID for secure authentication.</string>
+<string>Authenticate securely using Face ID.</string>
 ```
 
----
-
-## ⚙️ Expo Configuration
-
-Add `@hituchhimpa/react-native-securex` to your Expo config (`app.json` or `app.config.js`):
-
+#### Expo Setup
+Add the plugin to your `app.json`:
 ```json
 {
   "expo": {
     "plugins": [
       [
         "@hituchhimpa/react-native-securex",
-        {
-          "faceIDPermission": "Allow $(PRODUCT_NAME) to use Face ID for secure authentication."
-        }
+        { "faceIDPermission": "Authenticate securely using Face ID." }
       ]
     ]
   }
 }
 ```
 
-Then regenerate native build folders:
-```sh
-npx expo prebuild
+---
+
+## 💡 Copy-Paste Code Recipes
+
+### 1. One-Tap Biometric Authentication
+
+Prompt the user for Face ID, Touch ID, or Android Biometric Prompt:
+
+```typescript
+import { SecureX } from '@hituchhimpa/react-native-securex';
+
+const loginWithBiometrics = async () => {
+  const result = await SecureX.simplePrompt({
+    promptMessage: 'Confirm your identity to unlock SecureX',
+    cancelButtonText: 'Use Passcode',
+  });
+
+  if (result.success) {
+    console.log('User authenticated via Secure Enclave / KeyStore!');
+  } else {
+    console.warn('Authentication failed or cancelled:', result.error);
+  }
+};
 ```
+
+---
+
+### 2. Encrypted Hardware Storage (Biometric-Gated)
+
+Encrypt session tokens or API keys with AES-256 inside hardware chips. Gate access with biometric prompts:
+
+```typescript
+// Store a secret gated by Face ID / Fingerprint
+await SecureX.setItem(
+  'user_auth_token',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+  'Authenticate to save your credentials'
+);
+
+// Retrieve the secret (automatically prompts biometrics)
+const token = await SecureX.getItem(
+  'user_auth_token',
+  'Authenticate to access your account'
+);
+
+// Wipe secret when user logs out
+await SecureX.removeItem('user_auth_token');
+```
+
+> **Tip**: Pass an empty string `""` for the prompt parameter to store and retrieve data **silently** without prompting the user, while still benefiting from hardware encryption.
+
+---
+
+### 3. Biometric Cryptographic Signatures (PKI Authentication)
+
+Eliminate static passwords by having the device sign server challenge nonces using a hardware-bound private key:
+
+```typescript
+// 1. Generate hardware ECDSA P-256 key pair on enrollment
+const { publicKey } = await SecureX.createKeys();
+// Send publicKey to your backend to register device
+
+// 2. Sign transaction / login payload with biometric authorization
+const { success, signature } = await SecureX.createSignature({
+  promptMessage: 'Authorize $250.00 transfer',
+  payload: `transfer:250:nonce_${serverNonce}`,
+});
+
+if (success && signature) {
+  // Send signature to your server for cryptographic verification!
+}
+```
+
+---
+
+### 4. 🚀 Ditch `redux-persist` for Auth State (Or Use as Drop-in Adapter)
+
+Stop configuring `redux-persist`, AsyncStorage, transformers, and complex migration boilerplate just to keep user tokens alive across app reloads. SecureX provides hardware-backed persistence out of the box:
+
+#### Pattern A: Zero-Redux Native Auth State (Recommended)
+Save and retrieve session tokens directly in hardware-isolated memory without Redux store rehydration delays:
+
+```typescript
+import { SecureX } from '@hituchhimpa/react-native-securex';
+
+// On Login: Store session directly in hardware-isolated vault
+export const saveUserSession = async (userSession: { token: string; userId: string }) => {
+  await SecureX.setItem('auth_session', JSON.stringify(userSession));
+};
+
+// On App Launch: Fast, encrypted retrieval without Redux rehydration lag
+export const loadUserSession = async () => {
+  const session = await SecureX.getItem('auth_session');
+  return session ? JSON.parse(session) : null;
+};
+
+// On Logout: Instant cryptographic wipe
+export const logoutUser = async () => {
+  await SecureX.removeItem('auth_session');
+  SecureX.wipeSession();
+};
+```
+
+#### Pattern B: Using Redux? Use SecureX as a 1-Line Secure Storage Engine
+If your codebase already uses Redux and you want to replace insecure `AsyncStorage`, SecureX drops right in as a hardware-backed storage adapter:
+
+```typescript
+import { persistStore, persistReducer } from 'redux-persist';
+import { SecureX } from '@hituchhimpa/react-native-securex';
+
+// Drop-in secure hardware storage engine for redux-persist
+export const secureXStorage = {
+  setItem: (key: string, value: string) => SecureX.setItem(key, value, ''),
+  getItem: (key: string) => SecureX.getItem(key, ''),
+  removeItem: (key: string) => SecureX.removeItem(key),
+};
+
+const persistConfig = {
+  key: 'root',
+  storage: secureXStorage,
+  whitelist: ['auth'], // Hardware-encrypted with AES-256 StrongBox / Secure Enclave
+};
+```
+
+---
+
+### 5. Real-Time Threat & Risk Audit
+
+Inspect whether the host operating system or process memory is compromised before running sensitive operations:
+
+```typescript
+const posture = SecureX.audit();
+
+console.log(`Security Score: ${posture.securityScore}/100`);
+
+if (posture.jailbroken || posture.rooted) {
+  throw new Error('Device is rooted or jailbroken. Halting financial features.');
+}
+
+if (posture.hookingDetected) {
+  throw new Error('Frida / Xposed dynamic hooking detected in process memory!');
+}
+
+if (posture.debuggerAttached) {
+  console.warn('Debugger attached to production process.');
+}
+```
+
+---
+
+### 6. Granular Biometric Sensor Discovery
+
+Know exactly what biometric hardware is physically present and enrolled on the user's device:
+
+```typescript
+const sensor = await SecureX.isSensorAvailable();
+
+console.log('Available:', sensor.available);          // true
+console.log('Primary Biometry:', sensor.biometryType); // 'FaceID' | 'TouchID' | 'Fingerprint' | 'Iris'
+console.log('Has Fingerprint:', sensor.hasFingerprint);
+console.log('Has Face Recognition:', sensor.hasFace);
+console.log('Has Iris Scanner:', sensor.hasIris);
+```
+
+---
+
+## 📱 Interactive Showcase App
+
+Test all features firsthand with the included **SecureX Showcase** example application:
+
+```sh
+# Clone and prepare
+git clone https://github.com/hituchhimpa/react-native-securex-community.git
+cd react-native-securex-community
+yarn install
+yarn prepare
+
+# Run iOS Showcase
+yarn example ios
+
+# Run Android Showcase
+yarn example android
+```
+
+The example app features a dark cyberpunk dashboard with:
+- 🛡️ Live Security Posture & Hardware Scorecard
+- 🧬 Sensor hardware detection
+- 👤 Face ID / Fingerprint interactive login
+- ✍️ Cryptographic payload signing
+- 💾 Biometric-gated vault storage
+- 💻 Real-time audit event terminal
 
 ---
 
 ## 📖 Complete API Reference
 
-### Core Secure Storage
+### 🔐 Core Vault & Storage
+| Method | Description | Return Type |
+| :--- | :--- | :--- |
+| `SecureX.setItem(key, value, prompt)` | Stores encrypted secret | `Promise<boolean>` |
+| `SecureX.getItem(key, prompt)` | Decrypts and returns secret | `Promise<string \| null>` |
+| `SecureX.removeItem(key)` | Deletes key from storage | `Promise<boolean>` |
+| `SecureX.encrypt(plainText, prompt)` | Encrypts raw string to Base64 | `Promise<string>` |
+| `SecureX.decrypt(cipherBase64, prompt)` | Decrypts Base64 ciphertext | `Promise<string>` |
+| `SecureX.hasSecureLockScreen()` | Checks if PIN/Passcode/Biometric lock is active | `boolean` |
 
-#### `SecureX.setItem(key: string, value: string, prompt: string): Promise<boolean>`
-Encrypts and saves a key-value pair.
-- `key`: Unique identifier.
-- `value`: Sensitive text to store.
-- `prompt`: Message to display in the biometric dialog. **Pass an empty string (`""`) for silent hardware-backed storage (no prompt).**
+### 🧬 Biometrics & PKI Signatures
+| Method | Description | Return Type |
+| :--- | :--- | :--- |
+| `SecureX.isSensorAvailable()` | Discovers available hardware sensors | `Promise<SensorResult>` |
+| `SecureX.simplePrompt(options)` | Native biometric authentication modal | `Promise<SimplePromptResult>` |
+| `SecureX.createKeys()` | Generates hardware ECDSA P-256 keypair | `Promise<CreateKeysResult>` |
+| `SecureX.biometricKeysExist()` | Checks if hardware keys exist | `Promise<BiometricKeysExistResult>` |
+| `SecureX.deleteKeys()` | Deletes hardware keypair | `Promise<DeleteKeysResult>` |
+| `SecureX.createSignature(options)` | Signs payload with biometric prompt | `Promise<CreateSignatureResult>` |
 
-#### `SecureX.getItem(key: string, prompt: string): Promise<string | null>`
-Retrieves and decrypts a key-value pair.
-- `key`: Unique identifier.
-- `prompt`: Biometric prompt message. **Pass `""` if retrieved silently (without prompt).**
-- *Note:* Returns `null` if the item does not exist or user cancels the prompt.
+### 🛡️ Runtime Fortress & Anti-Tamper
+| Method | Description | Return Type |
+| :--- | :--- | :--- |
+| `SecureX.audit()` | Full synchronous security posture scan | `AuditResult` |
+| `SecureX.setPrivacyScreenEnabled(flag)` | Blur app in App Switcher & block screenshots | `void` |
+| `SecureX.setOverlayProtectionEnabled(flag)` | Block touch events during overlay/tapjacking | `void` |
+| `SecureX.generateAttestation(nonce)` | Generates App Attest / Play Integrity token | `Promise<string>` |
+| `SecureX.setSessionTimeout(seconds)` | Configures automatic session expiration | `void` |
+| `SecureX.isSessionExpired()` | Checks if session has timed out | `boolean` |
+| `SecureX.wipeSession()` | Wipes sensitive session credentials | `void` |
 
-#### `SecureX.removeItem(key: string): Promise<boolean>`
-Deletes a value and its encryption key from storage.
-
-#### `SecureX.encrypt(plainText: string, prompt: string): Promise<string>`
-Encrypts arbitrary string data and returns a Base64-encoded encrypted string.
-
-#### `SecureX.decrypt(encryptedBase64: string, prompt: string): Promise<string>`
-Decrypts a Base64-encoded ciphertext string back to raw text.
-
----
-
-### Security Auditing
-
-#### `SecureX.audit(): SecurityPosture`
-Synchronously scans the device and returns a diagnostic posture object of the system's security integrity.
-
-```typescript
-const posture = SecureX.audit();
-```
-
-##### Diagnostic Posture Properties:
-- `securityScore`: `number` (0 to 100). Rating of device safety.
-- `jailbroken`: `boolean` (iOS jailbreak detected).
-- `rooted`: `boolean` (Android root detected).
-- `emulator`: `boolean` (Running on simulator/emulator).
-- `debuggerAttached`: `boolean` (Runtime debugger attached).
-- `hookingDetected`: `boolean` (Frida/Xposed hooking detected).
-- `appTampered`: `boolean` (App package altered/resigned).
-- `biometricEnrollmentChanged`: `boolean` (Biometrics added/deleted since setup).
-- `hardwareBacked`: `boolean` (Device hardware supports secure keys).
-- `biometricEnabled`: `boolean` (User has enrolled biometrics).
-- `hasSecureLockScreen`: `boolean` (Device has a PIN/pattern/password/biometric configured — see below).
-
-#### `SecureX.isSensorAvailable(): Promise<SensorResult>`
-Detects whether biometric hardware is present, enrolled, and returns granular sensor hardware capabilities:
-
-```typescript
-const {
-  available,           // boolean: true if sensor is ready & biometrics enrolled
-  enrolled,            // boolean: true if user has enrolled biometrics
-  biometryType,        // 'FaceID' | 'TouchID' | 'Fingerprint' | 'Face' | 'Iris' | 'Biometrics'
-  biometricsSupported, // string[]: e.g. ['Fingerprint', 'Face']
-  hasFingerprint,      // boolean: true if device has fingerprint sensor
-  hasFace,             // boolean: true if device has face recognition hardware
-  hasIris,             // boolean: true if device has iris scanner
-  error,
-} = await SecureX.isSensorAvailable();
-
-console.log('Supported sensors on device:', biometricsSupported);
-// e.g. ['Fingerprint', 'Face'] on modern Android, ['FaceID'] on modern iPhone
-```
-
-#### `SecureX.simplePrompt(options): Promise<SimplePromptResult>`
-Presents the native OS biometric prompt (Face ID / Touch ID / Fingerprint) for simple local authentication (e.g. app unlock, screen lock).
-
-```typescript
-const { success, error } = await SecureX.simplePrompt({
-  promptMessage: 'Confirm identity to log in',
-  cancelButtonText: 'Use Passcode', // Android
-});
-
-if (success) {
-  console.log('Biometric authentication succeeded!');
-} else {
-  console.log('Authentication failed or cancelled:', error);
-}
-```
-
-#### `SecureX.createKeys(): Promise<CreateKeysResult>`
-Generates a 256-bit ECC P-256 key pair inside the Secure Enclave / Android Keystore where the private key requires biometric authentication for signing. Returns the Base64 DER/PEM public key to register with your backend.
-
-```typescript
-const { publicKey } = await SecureX.createKeys();
-// Send publicKey to your backend during user registration
-```
-
-#### `SecureX.biometricKeysExist(): Promise<BiometricKeysExistResult>`
-Checks if biometric hardware keys exist on the device.
-
-```typescript
-const { keysExist } = await SecureX.biometricKeysExist();
-```
-
-#### `SecureX.deleteKeys(): Promise<DeleteKeysResult>`
-Deletes the biometric hardware keys from the secure hardware.
-
-```typescript
-const { success } = await SecureX.deleteKeys();
-```
-
-#### `SecureX.createSignature(options): Promise<CreateSignatureResult>`
-Prompts the user for biometric authentication, and upon success, signs the given payload with the hardware private key. Ideal for server-verified biometric login and transaction approval.
-
-```typescript
-const { success, signature, error } = await SecureX.createSignature({
-  promptMessage: 'Authorize payment with biometrics',
-  payload: serverChallengeNonce,
-});
-
-if (success && signature) {
-  // Send signature back to backend to verify with user's stored public key
-}
-```
-
-> [!TIP]
-> You can also access all these methods under the **`SecureX.biometrics`** namespace:
-> `SecureX.biometrics.isSensorAvailable()`
-> `SecureX.biometrics.simplePrompt()`
-> `SecureX.biometrics.createKeys()`
-> `SecureX.biometrics.createSignature()`
-
-#### `SecureX.hasSecureLockScreen(): boolean`
-Synchronously checks whether the device has a secure lock screen (PIN, pattern, password, or biometric) configured. Auth-gated keys used by `encrypt`/`decrypt`/`setItem`/`getItem` when called with a non-empty `prompt` can only be created once a secure lock screen exists — without one, those calls will always fail. Check this before calling them with a prompt, e.g. to prompt the user to set a device PIN first.
-
-```typescript
-if (!SecureX.hasSecureLockScreen()) {
-  // Ask the user to set a device PIN/passcode before storing anything biometric-gated.
-}
-```
+### 🧠 Native-Isolated In-Memory Store
+| Method | Description | Return Type |
+| :--- | :--- | :--- |
+| `SecureX.secureStore(key, value)` | Stores secret in `mlock` page (no JS heap) | `void` |
+| `SecureX.secureRead(key)` | Reads secret from native memory | `string \| null` |
+| `SecureX.secureWipe()` | Zeroes out memory buffers immediately | `void` |
 
 ---
 
-### Device & UI Protection
+## 🔒 Security & Supply Chain Integrity
 
-#### `SecureX.setPrivacyScreenEnabled(enabled: boolean): void`
-Blocks screenshots/screen recordings on Android and applies a secure blur in the App Switcher on iOS.
-
-#### `SecureX.setOverlayProtectionEnabled(enabled: boolean): void`
-*(Android Only)* Blocks touch events when the app is obscured by an overlay window (prevents Tapjacking).
-
-#### `SecureX.generateAttestation(nonce: string): Promise<string>`
-Generates a platform integrity payload (App Attest on iOS / Play Integrity Token on Android) bound to the provided `nonce`.
+`react-native-securex` adheres to strict zero-trust supply chain principles:
+- **No Install Scripts**: Zero postinstall or lifecycle execution hooks.
+- **Hardware Isolation**: Private keys never leave the hardware cryptoprocessor.
+- **Memory Zeroing**: Sensitive native buffers are zeroed before deallocation.
+- For coordinated vulnerability disclosure, review [SECURITY.md](SECURITY.md).
 
 ---
 
-### Hardware Signing & Keys
+## 🤝 Contributing
 
-#### `SecureX.generateSigningKeyPair(tag: string): Promise<string>`
-Generates a P-256 ECC key pair inside hardware (Secure Enclave / StrongBox). Returns the Base64 DER/PEM encoded public key. The private key never leaves the hardware chip.
-
-#### `SecureX.signData(tag: string, data: string): Promise<string>`
-Signs text data using the private key corresponding to `tag`. Returns a Base64 cryptographic ECDSA signature.
-
----
-
-### Session & Memory Control
-
-#### `SecureX.setSessionTimeout(seconds: number): void`
-Sets a timer duration (in seconds) for session validation.
-
-#### `SecureX.isSessionExpired(): boolean`
-Returns `true` if the elapsed time since `setSessionTimeout` or the last authentication exceeds the timeout.
-
-#### `SecureX.wipeSession(): void`
-Instantly locks the vault, clears session timestamps, and zeroes out all secure in-memory storage.
-
-#### `SecureX.secureStore(key: string, value: string): void`
-Stores sensitive temporary data directly in native-isolated memory.
-
-#### `SecureX.secureRead(key: string): string | null`
-Reads data from native-isolated memory.
-
-#### `SecureX.secureWipe(): void`
-Zero-fills and clears all secure native-isolated memory storage.
-
----
-
-### Key Rotation & Events
-
-#### `SecureX.rotateEncryptionKey(): Promise<boolean>`
-Re-encrypts the master storage key with a newly generated hardware key.
-
-#### `SecureX.onSecurityEvent(callback: (event: SecurityEvent) => void): EmitterSubscription`
-Listens for real-time security events.
-
-##### `SecurityEvent` Type:
-```typescript
-interface SecurityEvent {
-  type: 'SESSION_EXPIRED' | 'BIOMETRIC_CHANGED' | 'HOOKING_DETECTED' | 'APP_TAMPERED';
-  detail?: string;
-  timestamp: number;
-}
-```
-
----
-
-## 🚀 Enterprise Integration Workflow
-
-```typescript
-import React, { useEffect } from 'react';
-import { Alert, BackHandler } from 'react-native';
-import { SecureX } from '@hituchhimpa/react-native-securex';
-
-export function App() {
-  useEffect(() => {
-    // 1. Run Device Risk Audit
-    const posture = SecureX.audit();
-    if (posture.jailbroken || posture.rooted || posture.hookingDetected) {
-      Alert.alert('Security Violation', 'Compromised environment detected.', [
-        { text: 'OK', onPress: () => BackHandler.exitApp() }
-      ]);
-      return;
-    }
-
-    // 2. Enable UI & Screen Shields
-    SecureX.setPrivacyScreenEnabled(true);
-    SecureX.setOverlayProtectionEnabled(true);
-
-    // 3. Set Inactivity Auto-Lock (5 minutes)
-    SecureX.setSessionTimeout(300);
-
-    // 4. Register Real-Time Security Event Listener
-    const sub = SecureX.onSecurityEvent((event) => {
-      if (event.type === 'SESSION_EXPIRED' || event.type === 'HOOKING_DETECTED') {
-        SecureX.wipeSession();
-      }
-    });
-
-    return () => sub.remove();
-  }, []);
-
-  return <MainNavigator />;
-}
-```
-
----
-
-## 🔒 Security Policy & Vulnerability Disclosure
-
-For vulnerability reports, security policies, and coordinated disclosure guidance, please consult [SECURITY.md](https://github.com/HituChhimpa7/react-native-auth-vault-community/blob/main/SECURITY.md).
+Contributions, feedback, and pull requests are warmly welcomed! Please check [CONTRIBUTING.md](CONTRIBUTING.md) to get started.
 
 ---
 
 ## 📄 License
 
-MIT — See [LICENSE](LICENSE) for details.
-
----
-
-<p align="center">
-  <strong>react-native-securex</strong><br/>
-  Bank-grade security for every React Native developer.<br/>
-  Made with ❤️ by <a href="https://github.com/HituChhimpa7">Hitesh Chhimpa</a>
-</p>
+MIT © [Hitesh Chhimpa](https://github.com/hituchhimpa). Built with ❤️ for the React Native community.

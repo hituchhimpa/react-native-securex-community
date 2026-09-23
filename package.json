@@ -38,7 +38,7 @@
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
     "prepare": "bob build && yarn build:plugin",
     "build:plugin": "tsc --project plugin/tsconfig.json",
-    "typecheck": "tsc && tsc --project plugin/tsconfig.json --noEmit",
+    "typecheck": "tsc && tsc --project plugin/tsconfig.json --noEmit && tsc --project example/tsconfig.json --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "test": "jest"
   },
@@ -69,14 +69,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/HituChhimpa7/react-native-auth-vault-community.git"
+    "url": "git+https://github.com/hituchhimpa/react-native-securex-community.git"
   },
-  "author": "Hitesh Chhimpa <hituchhimpa7@users.noreply.github.com> (https://github.com/hituchhimpa7)",
+  "author": "Hitesh Chhimpa <hituchhimpa7@users.noreply.github.com> (https://github.com/hituchhimpa)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/HituChhimpa7/react-native-auth-vault-community/issues"
+    "url": "https://github.com/hituchhimpa/react-native-securex-community/issues"
   },
-  "homepage": "https://github.com/HituChhimpa7/react-native-auth-vault-community#readme",
+  "homepage": "https://github.com/hituchhimpa/react-native-securex-community#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
