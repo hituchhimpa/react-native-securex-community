@@ -78,7 +78,8 @@
   },
   "homepage": "https://github.com/hituchhimpa/react-native-securex-community#readme",
   "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
   },
   "devDependencies": {
     "@eslint/compat": "^2.0.3",
